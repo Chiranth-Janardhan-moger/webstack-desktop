@@ -17,12 +17,26 @@ permissions:
   contents: write
 
 jobs:
-  build-windows:
-    name: Build Windows App (x64)
-    runs-on: windows-latest
+  build:
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Windows App (x64)
+            os: windows-latest
+          - platform: Linux App (x86_64)
+            os: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install Linux System Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libfuse2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -49,11 +63,12 @@ jobs:
           args: --ignore-version-mismatches
           tagName: ${{ inputs.release_tag || github.ref_name }}
           releaseName: 'WebStack Desktop ${{ inputs.release_tag || github.ref_name }}'
-          releaseBody: 'Native desktop client for WebStack powered by Tauri v2 and native WebView2 (~3.5 MB).'
+          releaseBody: 'Native desktop client for WebStack powered by Tauri v2 (~3.5 MB).'
           releaseDraft: false
           prerelease: false
 
       - name: Upload Windows Standalone Artifacts
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: WebStack-Windows-Installer
@@ -61,4 +76,14 @@ jobs:
             src-tauri/target/release/bundle/nsis/*.exe
             src-tauri/target/release/bundle/msi/*.msi
             src-tauri/target/release/webstack-desktop.exe
+          if-no-files-found: ignore
+
+      - name: Upload Linux Standalone Artifacts
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebStack-Linux-Packages
+          path: |
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/deb/*.deb
           if-no-files-found: ignore
