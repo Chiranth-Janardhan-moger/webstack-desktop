@@ -3,161 +3,470 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebStack</title>
+  <title>WebStack · Lightweight & Offline-First Bookmark Sync</title>
+  <meta name="description" content="Ultra-lightweight (~3.6 MB) native desktop client and Android bookmark manager. Sync bookmarks instantly and privately over local Wi-Fi. Zero cloud.">
   <link rel="stylesheet" href="./src/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111827'><path d='M12 2L3 21L12 14.5L21 21Z'/></svg>">
 </head>
 <body>
 
-  <!-- App Header -->
-  <header>
-    <div class="header-inner">
-      <div class="brand">
-        <div class="brand-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <!-- ========================================== -->
+  <!-- 1. WebStack Official Website & Download Portal (Web Mode) -->
+  <!-- ========================================== -->
+  <div id="webLanding" class="web-landing">
+    <!-- Navbar -->
+    <nav class="web-nav">
+      <div class="web-nav-inner">
+        <a href="/" class="brand" style="text-decoration: none; color: inherit;">
+          <div class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L3 21L12 14.5L21 21Z" />
+            </svg>
+          </div>
+          <div class="brand-title">WebStack</div>
+        </a>
+
+        <div class="web-nav-links">
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#how-it-works" class="nav-link">How it Works</a>
+          <a href="#download" class="nav-link active">Download</a>
+          <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop" target="_blank" rel="noopener noreferrer" class="nav-link github-nav-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="#download" class="btn-primary btn-nav-cta">Get WebStack</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span>v1.0.0 Now Available · Windows & Linux Desktop</span>
+        </div>
+        <h1 class="hero-headline">Private Bookmark Sync.<br>Zero Cloud. Native Speed.</h1>
+        <p class="hero-subheadline">
+          WebStack is an ultra-lightweight (~3.6 MB) native desktop app and companion for Android.
+          Sync your bookmarks peer-to-peer over your local Wi-Fi without third-party servers, accounts, or telemetry.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#download" class="btn-primary hero-btn-main">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download for Windows (.exe)</span>
+          </a>
+          <a href="#download" class="btn-secondary hero-btn-alt">
+            <span>All Platforms (Linux & Android)</span>
+          </a>
+        </div>
+
+        <div class="hero-specs-row">
+          <div class="spec-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            <span>~3.6 MB Native Binary (No Chromium)</span>
+          </div>
+          <div class="spec-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Peer-to-Peer Wi-Fi Sync</span>
+          </div>
+          <div class="spec-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>100% Offline Vault</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Download Section (Target for /download and #download) -->
+    <section id="download" class="download-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Downloads & Releases</span>
+          <h2 class="section-title">Download WebStack for Your Platform</h2>
+          <p class="section-desc">Zero bloat, zero dependencies. Choose your operating system below to install in seconds.</p>
+        </div>
+
+        <div class="platforms-grid">
+          <!-- Windows Card -->
+          <div class="platform-card platform-card-featured">
+            <div class="card-featured-badge">Recommended</div>
+            <div class="platform-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.951-1.801"/>
+              </svg>
+            </div>
+            <h3 class="platform-name">Windows</h3>
+            <p class="platform-meta">Windows 10 / 11 (64-bit) · v1.0.0 · ~3.6 MB</p>
+            <p class="platform-details">
+              Standalone Windows desktop app powered by Tauri v2 and native WebView2. Integrates directly into your Start Menu and Taskbar.
+            </p>
+
+            <div class="platform-actions">
+              <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases/download/v1.0.0/WebStack_1.0.0_x64-setup.exe" class="btn-primary btn-download-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download Installer (.exe)</span>
+              </a>
+
+              <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases/download/v1.0.0/WebStack_1.0.0_x64_en-US.msi" class="link-download-sub">
+                Or download Windows MSI (.msi)
+              </a>
+            </div>
+
+            <ul class="platform-highlights">
+              <li>Auto-detects phone companion on Wi-Fi</li>
+              <li>Zero CORS / mixed-content restrictions</li>
+              <li>Under 40 MB memory usage</li>
+            </ul>
+          </div>
+
+          <!-- Linux Card -->
+          <div class="platform-card">
+            <div class="platform-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.001 0C8.75 0 6.64 2.12 6.64 5.37c0 .87.16 1.76.47 2.58C5.06 8.7 3.5 10.66 3.5 13.06c0 2.21 1.25 4.09 3.06 4.95-.08.45-.14.92-.14 1.4 0 2.53 2.5 4.59 5.58 4.59 3.08 0 5.58-2.06 5.58-4.59 0-.48-.06-.95-.14-1.4 1.81-.86 3.06-2.74 3.06-4.95 0-2.4-1.56-4.36-3.61-5.11.31-.82.47-1.71.47-2.58C17.36 2.12 15.25 0 12.001 0zm-.08 1.83c2.09 0 3.53 1.34 3.53 3.54 0 .93-.26 1.79-.71 2.47-1.11-.27-2.31-.41-3.56-.41-1.07 0-2.1.11-3.07.32-.44-.68-.69-1.5-.69-2.38 0-2.2 1.44-3.54 3.5-3.54zm-2.04 6.95c.71-.1 1.45-.16 2.2-.16.89 0 1.76.08 2.59.22 1.48.55 2.55 1.94 2.55 3.58 0 .54-.12 1.05-.33 1.51-.76-.32-1.63-.5-2.56-.5-.95 0-1.83.19-2.61.53-.78-.34-1.66-.53-2.61-.53-.93 0-1.8.18-2.56.5-.21-.46-.33-.97-.33-1.51 0-1.64 1.07-3.03 2.55-3.58z"/>
+              </svg>
+            </div>
+            <h3 class="platform-name">Linux</h3>
+            <p class="platform-meta">Ubuntu / Debian / Fedora / Arch · v1.0.0 · ~3.2 MB</p>
+            <p class="platform-details">
+              Lightweight portable Linux client. High performance, zero daemon overhead, and native WebKitGTK rendering.
+            </p>
+
+            <div class="platform-actions">
+              <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases/latest" target="_blank" rel="noopener noreferrer" class="btn-primary btn-download-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download Linux (.AppImage / .deb)</span>
+              </a>
+
+              <span class="link-download-sub" style="text-decoration: none; cursor: default;">
+                chmod +x WebStack.AppImage
+              </span>
+            </div>
+
+            <ul class="platform-highlights">
+              <li>Portable AppImage & Debian package</li>
+              <li>Fully open source build</li>
+              <li>Zero telemetry or tracking</li>
+            </ul>
+          </div>
+
+          <!-- Android Card -->
+          <div class="platform-card">
+            <div class="platform-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5802 8.3585 13.8443 8 12 8s-3.5802.3585-5.1368.9497L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/>
+              </svg>
+            </div>
+            <h3 class="platform-name">Android Companion</h3>
+            <p class="platform-meta">Android 8.0+ · Phone Server & Database</p>
+            <p class="platform-details">
+              Hosts the encrypted SQLite database on your device and serves the local companion on port 8080.
+            </p>
+
+            <div class="platform-actions">
+              <a href="https://github.com/Chiranth-Janardhan-moger/webstack/releases" target="_blank" rel="noopener noreferrer" class="btn-primary btn-download-card">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download Android APK</span>
+              </a>
+
+              <a href="https://github.com/Chiranth-Janardhan-moger/webstack" target="_blank" rel="noopener noreferrer" class="link-download-sub">
+                View Android Source Code
+              </a>
+            </div>
+
+            <ul class="platform-highlights">
+              <li>AES-256 encrypted database</li>
+              <li>Embedded local HTTP server</li>
+              <li>Pure offline, zero internet permissions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Quickstart</span>
+          <h2 class="section-title">How to Sync in 30 Seconds</h2>
+          <p class="section-desc">Zero account setup. No cloud login. Connect in three simple steps.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <h3 class="step-title">Start Phone Companion</h3>
+            <p class="step-desc">
+              Open WebStack on your Android phone. Go to <strong>Settings → PC Companion</strong> and toggle <strong>Local Wi-Fi Sharing</strong> to ON.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <h3 class="step-title">Open WebStack Desktop</h3>
+            <p class="step-desc">
+              Launch the downloaded <strong>WebStack.exe</strong> on your PC. It will search your local Wi-Fi network for your phone companion.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <h3 class="step-title">Enter 6-Digit PIN</h3>
+            <p class="step-desc">
+              Enter the 6-digit PIN shown on your phone screen. Your entire bookmark library syncs instantly and remains available offline.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">Why WebStack</span>
+          <h2 class="section-title">Built for Speed, Privacy, and Control</h2>
+          <p class="section-desc">Everything an offline bookmark manager should be, without the bloated browser extensions or cloud lock-in.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            </div>
+            <h3 class="feature-title">Ultra-Lightweight (~3.6 MB)</h3>
+            <p class="feature-desc">
+              Unlike typical Electron desktop apps that bundle an entire 150 MB Chromium browser, WebStack uses Tauri v2 and native WebView2. Starts instantly and uses under 40 MB RAM.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h3 class="feature-title">100% Private Peer-to-Peer</h3>
+            <p class="feature-desc">
+              Your bookmarks never touch a third-party server. Synchronization occurs directly between your phone and PC over your home Wi-Fi network.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <h3 class="feature-title">Instant Keyboard Search</h3>
+            <p class="feature-desc">
+              Press <kbd class="kbd-key-sm">/</kbd> to search hundreds of bookmarks instantly by title, URL, or domain. Filter by custom categories with number keys.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3 class="feature-title">100% Offline Vault</h3>
+            <p class="feature-desc">
+              Even when your phone is turned off or you are traveling without internet, your synced bookmarks remain permanently cached in your local desktop vault.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="web-footer">
+      <div class="web-footer-inner">
+        <div class="footer-left">
+          <div class="brand">
+            <div class="brand-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L3 21L12 14.5L21 21Z" />
+              </svg>
+            </div>
+            <div class="brand-title">WebStack</div>
+          </div>
+          <p class="footer-sub">Private, offline-first bookmark synchronization across Android and Desktop.</p>
+        </div>
+
+        <div class="footer-right">
+          <a href="#download">Download</a>
+          <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop" target="_blank" rel="noopener noreferrer">Desktop GitHub</a>
+          <a href="https://github.com/Chiranth-Janardhan-moger/webstack" target="_blank" rel="noopener noreferrer">Android GitHub</a>
+          <a href="#how-it-works">Setup Guide</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>MIT License · Developed by Chiranth Janardhan Moger</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. Native Desktop App View (Tauri Mode)    -->
+  <!-- ========================================== -->
+  <div id="desktopApp" class="desktop-app-view" style="display: none;">
+    <!-- App Header -->
+    <header>
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L3 21L12 14.5L21 21Z" />
+            </svg>
+          </div>
+          <div class="brand-title">WebStack</div>
+          <span class="badge-live" id="statusBadge">Live Sync</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-nav">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search stack (/)..." autocomplete="off">
+          </div>
+
+          <button id="btnOpenAddModal" class="btn-circle-add" aria-label="Add Bookmark" title="Add Bookmark (N)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+
+          <button id="btnOpenShortcuts" class="btn-circle-action" aria-label="Keyboard Shortcuts" title="Shortcuts (?)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+              <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M6 12h.001M10 12h.001M14 12h.001M18 12h.001M7 16h10"></path>
+            </svg>
+          </button>
+
+          <button id="btnSettings" class="btn-circle-action" aria-label="Connection Settings" title="Server Connection">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+
+          <button id="btnDisconnect" class="btn-circle-action" aria-label="Disconnect" title="Disconnect">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View -->
+    <main>
+      <div class="controls-bar">
+        <div class="category-pills" id="categoryPills">
+          <button class="chip active" data-cat="ALL">All (<span id="totalCount">0</span>)</button>
+        </div>
+      </div>
+
+      <div class="grid" id="bookmarksGrid"></div>
+    </main>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal-overlay">
+      <div class="modal-card" style="text-align: center;">
+        <div style="width: 48px; height: 48px; background: var(--text); color: var(--bg); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2L3 21L12 14.5L21 21Z" />
           </svg>
         </div>
-        <div class="brand-title">WebStack</div>
-        <span class="badge-live" id="statusBadge">Live Sync</span>
-      </div>
+        <h2 style="font-size: 19px; font-weight: 700; margin-bottom: 4px;">WebStack Desktop</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;" id="authDiscoveryStatus">Enter the 6-digit PIN shown on your phone</p>
 
-      <div class="header-actions">
-        <div class="search-nav">
-          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="searchInput" class="search-input" placeholder="Search stack (/)..." autocomplete="off">
+        <div id="authError" style="color: #ef4444; font-size: 12.5px; font-weight: 500; margin-bottom: 12px; display: none;"></div>
+
+        <input type="text" id="pinInput" class="input-field" maxlength="6" placeholder="000000" style="text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 6px; padding: 10px; margin-bottom: 14px;" inputmode="numeric">
+        <button id="btnConnect" class="btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">Connect to Phone</button>
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11.5px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+          <span>Phone URL: <strong id="currentServerDisplay">http://localhost:8080</strong></span>
+          <button type="button" id="btnEditServerInAuth" style="background: none; border: none; color: var(--text); font-weight: 600; text-decoration: underline; cursor: pointer;">Change Address</button>
         </div>
-
-        <a id="btnDownloadExe" href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases/latest" target="_blank" class="btn-primary" style="padding: 7px 13px; font-size: 12px; text-decoration: none; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Get Windows App</span>
-        </a>
-
-        <button id="btnOpenAddModal" class="btn-circle-add" aria-label="Add Bookmark" title="Add Bookmark (N)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-        </button>
-
-        <button id="btnOpenShortcuts" class="btn-circle-action" aria-label="Keyboard Shortcuts" title="Shortcuts (?)">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
-            <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M6 12h.001M10 12h.001M14 12h.001M18 12h.001M7 16h10"></path>
-          </svg>
-        </button>
-
-        <button id="btnSettings" class="btn-circle-action" aria-label="Connection Settings" title="Server Connection">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
-        </button>
-
-        <button id="btnDisconnect" class="btn-circle-action" aria-label="Disconnect" title="Disconnect">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main View -->
-  <main>
-    <div class="controls-bar">
-      <div class="category-pills" id="categoryPills">
-        <button class="chip active" data-cat="ALL">All (<span id="totalCount">0</span>)</button>
       </div>
     </div>
 
-    <div class="grid" id="bookmarksGrid"></div>
-  </main>
+    <!-- Add Bookmark Modal -->
+    <div id="addModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-header-title">Add Bookmark</h3>
+            <p class="modal-header-sub">Saves locally and syncs to phone</p>
+          </div>
+          <button id="btnCloseAddModal" class="btn-modal-close" aria-label="Close">✕</button>
+        </div>
 
-  <!-- Authentication Modal -->
-  <div id="authModal" class="modal-overlay">
-    <div class="modal-card" style="text-align: center;">
-      <div style="width: 48px; height: 48px; background: var(--text); color: var(--bg); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L3 21L12 14.5L21 21Z" />
-        </svg>
-      </div>
-      <h2 style="font-size: 19px; font-weight: 700; margin-bottom: 4px;">WebStack Desktop</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;" id="authDiscoveryStatus">Scanning Wi-Fi for phone...</p>
+        <form id="addBookmarkForm" style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">URL</label>
+            <input type="url" id="addUrl" class="input-field" placeholder="https://example.com" required style="margin-top: 5px;">
+          </div>
 
-      <div id="authError" style="color: #ef4444; font-size: 12.5px; font-weight: 500; margin-bottom: 12px; display: none;"></div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Category</label>
+            <input type="text" id="addCategory" class="input-field" placeholder="Personal" style="margin-top: 5px;">
+          </div>
 
-      <input type="text" id="pinInput" class="input-field" maxlength="6" placeholder="000000" style="text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 6px; padding: 10px; margin-bottom: 14px;" inputmode="numeric">
-      <button id="btnConnect" class="btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">Connect to Phone</button>
-
-      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11.5px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
-        <span>Server: <strong id="currentServerDisplay">http://localhost:8080</strong></span>
-        <button type="button" id="btnEditServerInAuth" style="background: none; border: none; color: var(--text-muted); text-decoration: underline; cursor: pointer;">Change</button>
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+            <button type="button" id="btnCancelAdd" class="btn-circle-action" style="width: auto; height: auto; padding: 8px 14px; border-radius: var(--radius-sm); font-size: 13px;">Cancel</button>
+            <button type="submit" id="btnSaveBookmark" class="btn-primary">Save Bookmark</button>
+          </div>
+        </form>
       </div>
     </div>
-  </div>
 
-  <!-- Add Bookmark Modal -->
-  <div id="addModal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div>
-          <h3 class="modal-header-title">Add Bookmark</h3>
-          <p class="modal-header-sub">Saves locally and syncs to phone</p>
-        </div>
-        <button id="btnCloseAddModal" class="btn-modal-close" aria-label="Close">✕</button>
-      </div>
-
-      <form id="addBookmarkForm" style="display: flex; flex-direction: column; gap: 14px;">
-        <div>
-          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">URL</label>
-          <input type="url" id="addUrl" class="input-field" placeholder="https://example.com" required style="margin-top: 5px;">
+    <!-- Settings / Server Modal -->
+    <div id="settingsModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-header-title">Phone Companion Address</h3>
+            <p class="modal-header-sub">Enter the Browser URL shown on your phone's PC Companion screen</p>
+          </div>
+          <button id="btnCloseSettingsModal" class="btn-modal-close" aria-label="Close">✕</button>
         </div>
 
-        <div>
-          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Category</label>
-          <input type="text" id="addCategory" class="input-field" placeholder="Personal" style="margin-top: 5px;">
-        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Phone Wi-Fi URL</label>
+            <input type="text" id="serverUrlInput" class="input-field" placeholder="http://192.168.1.xxx:8080" style="margin-top: 5px; font-family: monospace;">
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+              Check your phone: <em>Settings → PC Companion → Browser URL</em>.
+            </p>
+          </div>
 
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" id="btnCancelAdd" class="btn-circle-action" style="width: auto; height: auto; padding: 8px 14px; border-radius: var(--radius-sm); font-size: 13px;">Cancel</button>
-          <button type="submit" id="btnSaveBookmark" class="btn-primary">Save Bookmark</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Settings / Server Modal -->
-  <div id="settingsModal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div>
-          <h3 class="modal-header-title">Server Connection</h3>
-          <p class="modal-header-sub">Configure phone companion address</p>
-        </div>
-        <button id="btnCloseSettingsModal" class="btn-modal-close" aria-label="Close">✕</button>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div>
-          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Phone Address</label>
-          <input type="text" id="serverUrlInput" class="input-field" placeholder="http://192.168.1.xxx:8080" style="margin-top: 5px; font-family: monospace;">
-        </div>
-
-        <button type="button" id="btnAutoScanServer" class="btn-primary" style="background: var(--surface-hover); color: var(--text); border: 1px solid var(--border);">
-          Scan Wi-Fi for Phone (mDNS)
-        </button>
-
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" id="btnSaveSettings" class="btn-primary">Save Address</button>
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+            <button type="button" id="btnSaveSettings" class="btn-primary">Save Address</button>
+          </div>
         </div>
       </div>
     </div>

@@ -22,6 +22,9 @@ let searchQuery = '';
 let isOffline = false;
 
 // DOM Elements
+const webLanding = document.getElementById('webLanding') as HTMLElement;
+const desktopApp = document.getElementById('desktopApp') as HTMLElement;
+
 const authModal = document.getElementById('authModal') as HTMLDivElement;
 const pinInput = document.getElementById('pinInput') as HTMLInputElement;
 const btnConnect = document.getElementById('btnConnect') as HTMLButtonElement;
@@ -51,7 +54,6 @@ const btnSaveBookmark = document.getElementById('btnSaveBookmark') as HTMLButton
 const settingsModal = document.getElementById('settingsModal') as HTMLDivElement;
 const btnCloseSettingsModal = document.getElementById('btnCloseSettingsModal') as HTMLButtonElement;
 const serverUrlInput = document.getElementById('serverUrlInput') as HTMLInputElement;
-const btnAutoScanServer = document.getElementById('btnAutoScanServer') as HTMLButtonElement;
 const btnSaveSettings = document.getElementById('btnSaveSettings') as HTMLButtonElement;
 
 const toast = document.getElementById('toast') as HTMLDivElement;
@@ -136,7 +138,7 @@ function renderBookmarks() {
     bookmarksGrid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); color: var(--text-muted);">
         <p style="font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px;">No bookmarks found</p>
-        <p style="font-size: 13px;">${searchQuery ? 'Try adjusting your search terms' : 'Add bookmarks from your phone or use (N) here'}</p>
+        <p style="font-size: 13px;">${searchQuery ? 'Try adjusting your search terms' : 'Add bookmarks from your phone or press (N)'}</p>
       </div>
     `;
     return;
@@ -254,20 +256,15 @@ async function submitPin(pin: string) {
     }
   } catch (err: any) {
     authError.style.display = 'block';
-    authError.textContent = `Unable to reach phone at ${getServerBase()}. Make sure phone is on same Wi-Fi.`;
+    authError.textContent = `Unable to reach phone at ${getServerBase()}. Make sure phone companion is ON and address matches your phone screen.`;
   } finally {
     btnConnect.disabled = false;
     btnConnect.textContent = 'Connect to Phone';
   }
 }
 
-// Setup & Initialization
-async function init() {
-  const btnDownloadExe = document.getElementById('btnDownloadExe') as HTMLElement | null;
-  if (btnDownloadExe && isTauri()) {
-    btnDownloadExe.style.display = 'none';
-  }
-
+// Setup & Initialization for Desktop Mode
+async function initDesktopMode() {
   updateServerLabel();
 
   // Try Auto-Discovery in background
@@ -306,151 +303,188 @@ async function init() {
   authModal.classList.remove('hidden');
   pinInput.value = '';
   pinInput.focus();
+
+  // Periodic Background Sync (every 10s)
+  setInterval(async () => {
+    const activeToken = getAuthToken();
+    if (!activeToken || !authModal.classList.contains('hidden')) return;
+
+    try {
+      const status = await fetchServerStatus();
+      if (status.authenticated) {
+        if (isOffline) {
+          showToast('Reconnected to phone!');
+          await loadData();
+        }
+        setBadgeState('online');
+        isOffline = false;
+      }
+    } catch {
+      if (!isOffline) {
+        setBadgeState('offline');
+        isOffline = true;
+      }
+    }
+  }, 10000);
+
+  // Desktop Event Listeners
+  btnConnect.addEventListener('click', () => submitPin(pinInput.value.trim()));
+  pinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitPin(pinInput.value.trim());
+  });
+  pinInput.addEventListener('input', () => {
+    const val = pinInput.value.trim();
+    if (val.length === 6) submitPin(val);
+  });
+
+  btnDisconnect.addEventListener('click', () => {
+    setAuthToken(null);
+    allBookmarks = [];
+    renderBookmarks();
+    authModal.classList.remove('hidden');
+    pinInput.value = '';
+    showToast('Disconnected from phone');
+  });
+
+  btnOpenAddModal.addEventListener('click', () => {
+    addModal.classList.remove('hidden');
+    addUrl.value = '';
+    setTimeout(() => addUrl.focus(), 60);
+  });
+  btnCloseAddModal.addEventListener('click', () => addModal.classList.add('hidden'));
+  btnCancelAdd.addEventListener('click', () => addModal.classList.add('hidden'));
+
+  addBookmarkForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = addUrl.value.trim();
+    const cat = addCategory.value.trim() || 'Personal';
+    if (!url) return;
+
+    btnSaveBookmark.disabled = true;
+    btnSaveBookmark.textContent = 'Saving...';
+
+    try {
+      const res = await addBookmark(url, cat);
+      if (res.success) {
+        showToast('Bookmark synced to phone!');
+        addModal.classList.add('hidden');
+        await loadData();
+      } else {
+        showToast(res.error || 'Failed to save');
+      }
+    } catch {
+      showToast('Cannot connect to phone. Try again.');
+    } finally {
+      btnSaveBookmark.disabled = false;
+      btnSaveBookmark.textContent = 'Save Bookmark';
+    }
+  });
+
+  btnSettings.addEventListener('click', () => {
+    serverUrlInput.value = getServerBase();
+    settingsModal.classList.remove('hidden');
+  });
+  btnEditServerInAuth.addEventListener('click', () => {
+    serverUrlInput.value = getServerBase();
+    settingsModal.classList.remove('hidden');
+  });
+  btnCloseSettingsModal.addEventListener('click', () => settingsModal.classList.add('hidden'));
+  btnSaveSettings.addEventListener('click', () => {
+    const val = serverUrlInput.value.trim();
+    if (val) {
+      setServerBase(val);
+      updateServerLabel();
+      settingsModal.classList.add('hidden');
+      showToast(`Phone address updated: ${getServerBase()}`);
+    }
+  });
+
+  // Search input
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = (e.target as HTMLInputElement).value;
+    renderBookmarks();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    const isInput = active && ['INPUT', 'TEXTAREA'].includes(active.tagName);
+
+    if (e.key === 'Escape') {
+      addModal.classList.add('hidden');
+      settingsModal.classList.add('hidden');
+      if (searchQuery) {
+        searchQuery = '';
+        searchInput.value = '';
+        renderBookmarks();
+      }
+    } else if (!isInput) {
+      if (e.key === '/') {
+        e.preventDefault();
+        searchInput.focus();
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        addModal.classList.remove('hidden');
+        setTimeout(() => addUrl.focus(), 60);
+      } else if (e.key >= '1' && e.key <= '9') {
+        const idx = parseInt(e.key, 10) - 1;
+        const chips = categoryPills.querySelectorAll<HTMLButtonElement>('.chip');
+        if (chips[idx]) {
+          e.preventDefault();
+          chips[idx].click();
+        }
+      }
+    }
+  });
 }
 
-// Periodic Background Sync (every 10s)
-setInterval(async () => {
-  const token = getAuthToken();
-  if (!token || !authModal.classList.contains('hidden')) return;
+// Setup & Initialization for Web Landing Mode
+function initWebLandingMode() {
+  const isDownloadRoute = window.location.pathname.startsWith('/download') || window.location.hash === '#download';
 
-  try {
-    const status = await fetchServerStatus();
-    if (status.authenticated) {
-      if (isOffline) {
-        showToast('Reconnected to phone!');
-        await loadData();
+  if (isDownloadRoute) {
+    document.title = 'Download WebStack · Standalone Windows & Linux';
+    setTimeout(() => {
+      const downloadEl = document.getElementById('download');
+      if (downloadEl) {
+        downloadEl.scrollIntoView({ behavior: 'smooth' });
       }
-      setBadgeState('online');
-      isOffline = false;
-    }
-  } catch {
-    if (!isOffline) {
-      setBadgeState('offline');
-      isOffline = true;
-    }
+    }, 150);
   }
-}, 10000);
 
-// Event Listeners
-btnConnect.addEventListener('click', () => submitPin(pinInput.value.trim()));
-pinInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') submitPin(pinInput.value.trim());
-});
-pinInput.addEventListener('input', () => {
-  const val = pinInput.value.trim();
-  if (val.length === 6) submitPin(val);
-});
+  // Smooth scroll navigation
+  document.querySelectorAll<HTMLAnchorElement>('.nav-link, .btn-nav-cta, .hero-btn-main, .hero-btn-alt').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+          if (href === '#download') {
+            history.pushState(null, '', '/download');
+          } else {
+            history.pushState(null, '', href);
+          }
+        }
+      }
+    });
+  });
+}
 
-btnDisconnect.addEventListener('click', () => {
-  setAuthToken(null);
-  allBookmarks = [];
-  renderBookmarks();
-  authModal.classList.remove('hidden');
-  pinInput.value = '';
-  showToast('Disconnected from phone');
-});
-
-btnOpenAddModal.addEventListener('click', () => {
-  addModal.classList.remove('hidden');
-  addUrl.value = '';
-  setTimeout(() => addUrl.focus(), 60);
-});
-btnCloseAddModal.addEventListener('click', () => addModal.classList.add('hidden'));
-btnCancelAdd.addEventListener('click', () => addModal.classList.add('hidden'));
-
-addBookmarkForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const url = addUrl.value.trim();
-  const cat = addCategory.value.trim() || 'Personal';
-  if (!url) return;
-
-  btnSaveBookmark.disabled = true;
-  btnSaveBookmark.textContent = 'Saving...';
-
-  try {
-    const res = await addBookmark(url, cat);
-    if (res.success) {
-      showToast('Bookmark synced to phone!');
-      addModal.classList.add('hidden');
-      await loadData();
-    } else {
-      showToast(res.error || 'Failed to save');
-    }
-  } catch {
-    showToast('Cannot connect to phone. Try again.');
-  } finally {
-    btnSaveBookmark.disabled = false;
-    btnSaveBookmark.textContent = 'Save Bookmark';
-  }
-});
-
-btnSettings.addEventListener('click', () => {
-  serverUrlInput.value = getServerBase();
-  settingsModal.classList.remove('hidden');
-});
-btnEditServerInAuth.addEventListener('click', () => {
-  serverUrlInput.value = getServerBase();
-  settingsModal.classList.remove('hidden');
-});
-btnCloseSettingsModal.addEventListener('click', () => settingsModal.classList.add('hidden'));
-btnSaveSettings.addEventListener('click', () => {
-  const val = serverUrlInput.value.trim();
-  if (val) {
-    setServerBase(val);
-    updateServerLabel();
-    settingsModal.classList.add('hidden');
-    showToast(`Server address updated to ${getServerBase()}`);
-  }
-});
-
-btnAutoScanServer.addEventListener('click', async () => {
-  btnAutoScanServer.textContent = 'Scanning Wi-Fi...';
-  const server = await discoverPhoneServer();
-  if (server) {
-    serverUrlInput.value = server.url;
-    showToast(`Found phone at ${server.url}!`);
+// Main Entrypoint
+function bootstrap() {
+  if (isTauri()) {
+    // Running inside native Windows / Linux desktop binary
+    if (webLanding) webLanding.style.display = 'none';
+    if (desktopApp) desktopApp.style.display = 'block';
+    initDesktopMode();
   } else {
-    showToast('Could not auto-detect phone. Check IP on phone companion.');
+    // Running on public web browser (Vercel)
+    if (webLanding) webLanding.style.display = 'flex';
+    if (desktopApp) desktopApp.style.display = 'none';
+    initWebLandingMode();
   }
-  btnAutoScanServer.textContent = 'Scan Wi-Fi for Phone (mDNS)';
-});
+}
 
-// Search input
-searchInput.addEventListener('input', (e) => {
-  searchQuery = (e.target as HTMLInputElement).value;
-  renderBookmarks();
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  const active = document.activeElement;
-  const isInput = active && ['INPUT', 'TEXTAREA'].includes(active.tagName);
-
-  if (e.key === 'Escape') {
-    addModal.classList.add('hidden');
-    settingsModal.classList.add('hidden');
-    if (searchQuery) {
-      searchQuery = '';
-      searchInput.value = '';
-      renderBookmarks();
-    }
-  } else if (!isInput) {
-    if (e.key === '/') {
-      e.preventDefault();
-      searchInput.focus();
-    } else if (e.key === 'n' || e.key === 'N') {
-      e.preventDefault();
-      addModal.classList.remove('hidden');
-      setTimeout(() => addUrl.focus(), 60);
-    } else if (e.key >= '1' && e.key <= '9') {
-      const idx = parseInt(e.key, 10) - 1;
-      const chips = categoryPills.querySelectorAll<HTMLButtonElement>('.chip');
-      if (chips[idx]) {
-        e.preventDefault();
-        chips[idx].click();
-      }
-    }
-  }
-});
-
-init();
+bootstrap();
