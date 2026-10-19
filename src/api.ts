@@ -89,7 +89,7 @@ export async function nativeFetch(
     timeoutMs?: number;
   } = {}
 ): Promise<{ ok: boolean; status: number; json: () => Promise<any>; text: () => Promise<string> }> {
-  const timeout = options.timeoutMs || 4000;
+  const timeout = options.timeoutMs || 2500;
 
   if (isTauri()) {
     try {
@@ -107,8 +107,14 @@ export async function nativeFetch(
         json: () => response.json(),
         text: () => response.text(),
       };
-    } catch (e) {
-      // If plugin isn't initialized or failed, try Tauri custom command
+    } catch (e: any) {
+      // If tauriFetch threw network failure (connection refused/timeout), fail fast to prevent delay
+      const msg = e ? String(e.message || e).toLowerCase() : '';
+      if (msg.includes('timeout') || msg.includes('refused') || msg.includes('unreachable') || msg.includes('failed to respond') || msg.includes('os error')) {
+        throw e;
+      }
+
+      // If plugin isn't initialized or failed to load, try Tauri custom command
       try {
         const cmdRes = await invokeTauri<{ status: number; body: string }>('native_http_request', {
           url,
@@ -122,7 +128,9 @@ export async function nativeFetch(
           json: async () => JSON.parse(cmdRes.body),
           text: async () => cmdRes.body,
         };
-      } catch {}
+      } catch {
+        throw e;
+      }
     }
   }
 
@@ -152,7 +160,7 @@ export async function authenticatePin(pin: string): Promise<{ success: boolean; 
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pin }),
-    timeoutMs: 3000,
+    timeoutMs: 2500,
   });
 
   const data = await res.json();
@@ -167,7 +175,7 @@ export async function fetchServerStatus(): Promise<CompanionStatus> {
   const res = await nativeFetch(`${serverBase}/api/status`, {
     method: 'GET',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
-    timeoutMs: 2500,
+    timeoutMs: 1500,
   });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
@@ -182,7 +190,7 @@ export async function fetchBookmarks(): Promise<Bookmark[]> {
   const res = await nativeFetch(`${serverBase}/api/bookmarks`, {
     method: 'GET',
     headers: { Authorization: `Bearer ${token}` },
-    timeoutMs: 4000,
+    timeoutMs: 2500,
   });
 
   if (!res.ok) {
@@ -201,7 +209,7 @@ export async function fetchCategories(): Promise<string[]> {
     const res = await nativeFetch(`${serverBase}/api/categories`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
-      timeoutMs: 2500,
+      timeoutMs: 2000,
     });
     if (res.ok) {
       const data = await res.json();
@@ -223,7 +231,7 @@ export async function addBookmark(url: string, category: string): Promise<any> {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ url, category }),
-    timeoutMs: 4000,
+    timeoutMs: 3000,
   });
 
   return await res.json();
@@ -238,4 +246,81 @@ export async function openUrlInBrowser(url: string): Promise<void> {
     } catch {}
   }
   window.open(url, '_blank');
+}
+
+export function normalizeUrl(raw: string): string {
+  let url = raw.trim();
+  if (!url) return '';
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+  return url;
+}
+
+export function extractDomain(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.replace(/^www\./, '');
+  } catch {
+    return url.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+  }
+}
+
+export interface OfflineQueueItem {
+  url: string;
+  category: string;
+  createdAtMs: number;
+}
+
+export function getOfflineQueue(): OfflineQueueItem[] {
+  try {
+    const raw = localStorage.getItem('webstack_desktop_offline_queue');
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveOfflineQueue(queue: OfflineQueueItem[]): void {
+  try {
+    localStorage.setItem('webstack_desktop_offline_queue', JSON.stringify(queue));
+  } catch {}
+}
+
+export function enqueueOfflineBookmark(url: string, category: string): OfflineQueueItem {
+  const queue = getOfflineQueue();
+  const item: OfflineQueueItem = {
+    url,
+    category,
+    createdAtMs: Date.now(),
+  };
+  queue.push(item);
+  saveOfflineQueue(queue);
+  return item;
+}
+
+export async function flushOfflineQueue(): Promise<number> {
+  const token = getAuthToken();
+  if (!token) return 0;
+  const queue = getOfflineQueue();
+  if (queue.length === 0) return 0;
+
+  const remaining: OfflineQueueItem[] = [];
+  let flushed = 0;
+
+  for (const item of queue) {
+    try {
+      const res = await addBookmark(item.url, item.category);
+      if (res.success || (res.error && res.error.toLowerCase().includes('already in your stack'))) {
+        flushed++;
+      } else {
+        remaining.push(item);
+      }
+    } catch {
+      remaining.push(item);
+    }
+  }
+
+  saveOfflineQueue(remaining);
+  return flushed;
 }

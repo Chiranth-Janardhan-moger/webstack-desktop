@@ -346,6 +346,7 @@
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <input type="text" id="searchInput" class="search-input" placeholder="Search stack (/)..." autocomplete="off">
+            <button type="button" id="btnClearSearch" class="btn-clear-search" aria-label="Clear Search" title="Clear search" style="display: none;">✕</button>
           </div>
 
           <button id="btnOpenAddModal" class="btn-circle-add" aria-label="Add Bookmark" title="Add Bookmark (N)">
@@ -441,6 +442,46 @@
             <button type="submit" id="btnSaveBookmark" class="btn-primary">Save Bookmark</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="shortcutsModal" class="modal-overlay hidden">
+      <div class="modal-card" style="max-width: 440px;">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-header-title">Keyboard Shortcuts</h3>
+            <p class="modal-header-sub">Quick navigation in WebStack Desktop</p>
+          </div>
+          <button id="btnCloseShortcutsModal" class="btn-modal-close" aria-label="Close">✕</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span>Focus Search Bar</span>
+            <kbd class="kbd-key-sm">/</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span>Add New Bookmark</span>
+            <kbd class="kbd-key-sm">N</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span>Open Shortcuts Guide</span>
+            <kbd class="kbd-key-sm">?</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span>Close Modal / Clear Search</span>
+            <kbd class="kbd-key-sm">Esc</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span>Filter by Category</span>
+            <span style="font-size: 12px; color: var(--text-muted);"><kbd class="kbd-key-sm">1</kbd> – <kbd class="kbd-key-sm">9</kbd></span>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+          <button type="button" id="btnGotItShortcuts" class="btn-primary" style="padding: 8px 18px; font-size: 13px;">Got it</button>
+        </div>
       </div>
     </div>
 

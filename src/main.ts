@@ -11,6 +11,10 @@ import {
   setServerBase,
   openUrlInBrowser,
   isTauri,
+  normalizeUrl,
+  extractDomain,
+  enqueueOfflineBookmark,
+  flushOfflineQueue,
 } from './api';
 import type { Bookmark } from './types';
 
@@ -35,9 +39,11 @@ const btnEditServerInAuth = document.getElementById('btnEditServerInAuth') as HT
 
 const statusBadge = document.getElementById('statusBadge') as HTMLSpanElement;
 const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+const btnClearSearch = document.getElementById('btnClearSearch') as HTMLButtonElement | null;
 const btnOpenAddModal = document.getElementById('btnOpenAddModal') as HTMLButtonElement;
 const btnDisconnect = document.getElementById('btnDisconnect') as HTMLButtonElement;
 const btnSettings = document.getElementById('btnSettings') as HTMLButtonElement;
+const btnOpenShortcuts = document.getElementById('btnOpenShortcuts') as HTMLButtonElement | null;
 
 const categoryPills = document.getElementById('categoryPills') as HTMLDivElement;
 const totalCount = document.getElementById('totalCount') as HTMLSpanElement;
@@ -50,6 +56,10 @@ const addBookmarkForm = document.getElementById('addBookmarkForm') as HTMLFormEl
 const addUrl = document.getElementById('addUrl') as HTMLInputElement;
 const addCategory = document.getElementById('addCategory') as HTMLInputElement;
 const btnSaveBookmark = document.getElementById('btnSaveBookmark') as HTMLButtonElement;
+
+const shortcutsModal = document.getElementById('shortcutsModal') as HTMLDivElement | null;
+const btnCloseShortcutsModal = document.getElementById('btnCloseShortcutsModal') as HTMLButtonElement | null;
+const btnGotItShortcuts = document.getElementById('btnGotItShortcuts') as HTMLButtonElement | null;
 
 const settingsModal = document.getElementById('settingsModal') as HTMLDivElement;
 const btnCloseSettingsModal = document.getElementById('btnCloseSettingsModal') as HTMLButtonElement;
@@ -76,7 +86,6 @@ function setBadgeState(state: 'online' | 'offline' | 'searching') {
   statusBadge.textContent = state === 'online' ? 'Live Sync' : state === 'offline' ? 'Offline Vault' : 'Searching Wi-Fi';
 }
 
-// Render Category Pills
 function renderCategoryPills() {
   const currentTotal = allBookmarks.length;
   if (totalCount) totalCount.textContent = currentTotal.toString();
@@ -115,7 +124,6 @@ function escapeHtml(text: string): string {
   return div.innerHTML;
 }
 
-// Render Bookmarks Grid
 function renderBookmarks() {
   let filtered = allBookmarks;
 
@@ -138,7 +146,7 @@ function renderBookmarks() {
     bookmarksGrid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); color: var(--text-muted);">
         <p style="font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px;">No bookmarks found</p>
-        <p style="font-size: 13px;">${searchQuery ? 'Try adjusting your search terms' : 'Add bookmarks from your phone or press (N)'}</p>
+        <p style="font-size: 13px;">${searchQuery ? 'Try adjusting your search terms' : 'Add bookmarks from your phone or click (+) Add'}</p>
       </div>
     `;
     return;
@@ -147,6 +155,7 @@ function renderBookmarks() {
   bookmarksGrid.innerHTML = filtered
     .map((b) => {
       const favicon = getFaviconUrl(b.url);
+      const pendingBadge = b.isPendingSync ? `<span class="badge-pending-sync" title="Will sync when connected to phone">Pending Sync</span>` : '';
       return `
         <div class="bookmark-card" data-url="${escapeHtml(b.url)}">
           <div class="card-top">
@@ -159,7 +168,10 @@ function renderBookmarks() {
             </div>
           </div>
           <div class="card-bottom">
-            <span class="card-tag">${escapeHtml(b.category)}</span>
+            <div style="display: flex; align-items: center;">
+              <span class="card-tag">${escapeHtml(b.category)}</span>
+              ${pendingBadge}
+            </div>
             <div class="card-actions">
               <button class="action-btn btn-copy" data-url="${escapeHtml(b.url)}" title="Copy URL">Copy</button>
               <button class="action-btn btn-open" data-url="${escapeHtml(b.url)}" title="Open in Browser">Open ↗</button>
@@ -200,7 +212,42 @@ function renderBookmarks() {
   });
 }
 
-// Load data from phone or offline cache
+// 0ms Optimistic local cache hydration
+function hydrateFromCache(): boolean {
+  let hasData = false;
+  try {
+    const cached = localStorage.getItem('webstack_desktop_cached_bookmarks');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        allBookmarks = parsed;
+        hasData = true;
+      }
+    }
+  } catch {}
+
+  try {
+    const cachedCats = localStorage.getItem('webstack_desktop_cached_categories');
+    if (cachedCats) {
+      const parsed = JSON.parse(cachedCats);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        availableCategories = parsed;
+      }
+    }
+  } catch {}
+
+  if (hasData) {
+    authModal.classList.add('hidden');
+    setBadgeState('offline');
+    isOffline = true;
+    renderCategoryPills();
+    renderBookmarks();
+  }
+
+  return hasData;
+}
+
+// Load data from phone server
 async function loadData() {
   try {
     const [bms, cats] = await Promise.all([fetchBookmarks(), fetchCategories()]);
@@ -210,21 +257,23 @@ async function loadData() {
     localStorage.setItem('webstack_desktop_cached_categories', JSON.stringify(cats));
     setBadgeState('online');
     isOffline = false;
-  } catch (err) {
-    console.warn('Network sync failed, loading offline cache:', err);
-    isOffline = true;
-    setBadgeState('offline');
-    const cached = localStorage.getItem('webstack_desktop_cached_bookmarks');
-    if (cached) {
+
+    // Flush any offline bookmarks that were queued
+    const flushedCount = await flushOfflineQueue();
+    if (flushedCount > 0) {
+      showToast(`Synced ${flushedCount} offline bookmark${flushedCount > 1 ? 's' : ''} to phone!`);
+      // Reload updated server bookmarks
       try {
-        allBookmarks = JSON.parse(cached);
+        const updated = await fetchBookmarks();
+        allBookmarks = updated;
+        localStorage.setItem('webstack_desktop_cached_bookmarks', JSON.stringify(updated));
       } catch {}
     }
-    const cachedCats = localStorage.getItem('webstack_desktop_cached_categories');
-    if (cachedCats) {
-      try {
-        availableCategories = JSON.parse(cachedCats);
-      } catch {}
+  } catch (err) {
+    isOffline = true;
+    setBadgeState('offline');
+    if (allBookmarks.length === 0) {
+      hydrateFromCache();
     }
   }
 
@@ -234,7 +283,8 @@ async function loadData() {
 
 // Submit PIN
 async function submitPin(pin: string) {
-  if (pin.length !== 6 || !/^\d{6}$/.test(pin)) {
+  const clean = (pin || '').trim();
+  if (clean.length !== 6 || !/^\d{6}$/.test(clean)) {
     authError.style.display = 'block';
     authError.textContent = 'Please enter a 6-digit numeric PIN.';
     return;
@@ -245,7 +295,7 @@ async function submitPin(pin: string) {
   authError.style.display = 'none';
 
   try {
-    const res = await authenticatePin(pin);
+    const res = await authenticatePin(clean);
     if (res.success && res.token) {
       authModal.classList.add('hidden');
       showToast('Connected to phone!');
@@ -263,52 +313,264 @@ async function submitPin(pin: string) {
   }
 }
 
-// Setup & Initialization for Desktop Mode
-async function initDesktopMode() {
-  updateServerLabel();
+// Modal actions
+function openAddModal() {
+  addModal.classList.remove('hidden');
+  addUrl.value = '';
+  addCategory.value = currentCategory !== 'ALL' ? currentCategory : 'Personal';
+  setTimeout(() => addUrl.focus(), 60);
+}
 
-  // Try Auto-Discovery in background
-  discoverPhoneServer()
-    .then((server) => {
-      if (server && server.url) {
-        setServerBase(server.url);
-        updateServerLabel();
-        if (authDiscoveryStatus) {
-          authDiscoveryStatus.textContent = `Found phone companion at ${server.url}! Enter PIN to connect.`;
-        }
-        if (pinInput && document.activeElement !== pinInput) {
-          pinInput.focus();
-        }
-      }
-    })
-    .catch(() => {});
+function closeAddModal() {
+  addModal.classList.add('hidden');
+}
 
-  const token = getAuthToken();
-  if (token) {
-    try {
-      const status = await fetchServerStatus();
-      if (status.authenticated) {
-        authModal.classList.add('hidden');
-        await loadData();
-        return;
-      }
-    } catch {
-      // Offline fallback
-      const cached = localStorage.getItem('webstack_desktop_cached_bookmarks');
-      if (cached) {
-        authModal.classList.add('hidden');
-        loadData();
-        return;
-      }
-    }
-  }
+function openShortcutsModal() {
+  if (shortcutsModal) shortcutsModal.classList.remove('hidden');
+}
 
-  // Not authenticated or no cache
+function closeShortcutsModal() {
+  if (shortcutsModal) shortcutsModal.classList.add('hidden');
+}
+
+function openSettingsModal() {
+  serverUrlInput.value = getServerBase();
+  settingsModal.classList.remove('hidden');
+  setTimeout(() => serverUrlInput.focus(), 60);
+}
+
+function closeSettingsModal() {
+  settingsModal.classList.add('hidden');
+}
+
+function disconnect() {
+  setAuthToken(null);
+  allBookmarks = [];
+  renderCategoryPills();
+  renderBookmarks();
   authModal.classList.remove('hidden');
   pinInput.value = '';
-  pinInput.focus();
+  showToast('Disconnected from phone');
+}
 
-  // Periodic Background Sync (every 10s)
+// Setup & Initialization for Desktop Mode
+function initDesktopMode() {
+  updateServerLabel();
+
+  // 1. Instantly hydrate from local cache in 0ms (Never wait for network to render offline bookmarks!)
+  const hadCache = hydrateFromCache();
+
+  // 2. Wire up ALL desktop event listeners unconditionally
+  btnConnect.addEventListener('click', () => submitPin(pinInput.value));
+  pinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitPin(pinInput.value);
+  });
+  pinInput.addEventListener('input', () => {
+    const val = pinInput.value.trim();
+    if (val.length === 6 && /^\d{6}$/.test(val)) {
+      submitPin(val);
+    }
+  });
+
+  btnDisconnect.addEventListener('click', disconnect);
+  btnOpenAddModal.addEventListener('click', openAddModal);
+  btnCloseAddModal.addEventListener('click', closeAddModal);
+  btnCancelAdd.addEventListener('click', closeAddModal);
+  addModal.addEventListener('click', (e) => {
+    if (e.target === addModal) closeAddModal();
+  });
+
+  if (btnOpenShortcuts) {
+    btnOpenShortcuts.addEventListener('click', openShortcutsModal);
+  }
+  if (btnCloseShortcutsModal) {
+    btnCloseShortcutsModal.addEventListener('click', closeShortcutsModal);
+  }
+  if (btnGotItShortcuts) {
+    btnGotItShortcuts.addEventListener('click', closeShortcutsModal);
+  }
+  if (shortcutsModal) {
+    shortcutsModal.addEventListener('click', (e) => {
+      if (e.target === shortcutsModal) closeShortcutsModal();
+    });
+  }
+
+  btnSettings.addEventListener('click', openSettingsModal);
+  btnEditServerInAuth.addEventListener('click', openSettingsModal);
+  btnCloseSettingsModal.addEventListener('click', closeSettingsModal);
+  settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) closeSettingsModal();
+  });
+
+  btnSaveSettings.addEventListener('click', () => {
+    const val = serverUrlInput.value.trim();
+    if (val) {
+      setServerBase(val);
+      updateServerLabel();
+      closeSettingsModal();
+      showToast(`Phone address updated: ${getServerBase()}`);
+      loadData().catch(() => {});
+    }
+  });
+
+  // Search input and clear button
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = (e.target as HTMLInputElement).value;
+    if (btnClearSearch) {
+      btnClearSearch.style.display = searchQuery ? 'flex' : 'none';
+    }
+    renderBookmarks();
+  });
+
+  if (btnClearSearch) {
+    btnClearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      btnClearSearch.style.display = 'none';
+      renderBookmarks();
+      searchInput.focus();
+    });
+  }
+
+  // Add Bookmark form submission (Online sync + Offline queue fallback)
+  addBookmarkForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const rawUrl = addUrl.value.trim();
+    const cat = addCategory.value.trim() || 'Personal';
+    if (!rawUrl) return;
+
+    const url = normalizeUrl(rawUrl);
+    btnSaveBookmark.disabled = true;
+    btnSaveBookmark.textContent = 'Saving...';
+
+    const token = getAuthToken();
+    if (!isOffline && token) {
+      try {
+        const res = await addBookmark(url, cat);
+        if (res.success) {
+          showToast('Bookmark synced to phone!');
+          closeAddModal();
+          await loadData();
+          btnSaveBookmark.disabled = false;
+          btnSaveBookmark.textContent = 'Save Bookmark';
+          return;
+        } else if (res.error && res.error.toLowerCase().includes('already in your stack')) {
+          showToast(res.error);
+          closeAddModal();
+          btnSaveBookmark.disabled = false;
+          btnSaveBookmark.textContent = 'Save Bookmark';
+          return;
+        }
+      } catch (err) {
+        // Fall through to offline queue
+      }
+    }
+
+    // Save locally to offline cache and queue
+    enqueueOfflineBookmark(url, cat);
+    const offlineBm: Bookmark = {
+      id: 'offline_' + Date.now(),
+      title: url,
+      url: url,
+      domain: extractDomain(url),
+      category: cat,
+      createdAtMs: Date.now(),
+      isPendingSync: true,
+    };
+    allBookmarks.unshift(offlineBm);
+    localStorage.setItem('webstack_desktop_cached_bookmarks', JSON.stringify(allBookmarks));
+    closeAddModal();
+    renderBookmarks();
+    showToast('Saved offline. Will sync when phone connects.');
+    btnSaveBookmark.disabled = false;
+    btnSaveBookmark.textContent = 'Save Bookmark';
+  });
+
+  // Global Keyboard Shortcuts
+  document.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    const isInput = active && ['INPUT', 'TEXTAREA'].includes(active.tagName);
+
+    if (e.key === 'Escape') {
+      if (!addModal.classList.contains('hidden')) {
+        closeAddModal();
+      } else if (shortcutsModal && !shortcutsModal.classList.contains('hidden')) {
+        closeShortcutsModal();
+      } else if (!settingsModal.classList.contains('hidden')) {
+        closeSettingsModal();
+      } else if (searchQuery) {
+        searchQuery = '';
+        searchInput.value = '';
+        if (btnClearSearch) btnClearSearch.style.display = 'none';
+        renderBookmarks();
+        searchInput.blur();
+      }
+    } else if (!isInput) {
+      if (e.key === '/') {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        openAddModal();
+      } else if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        e.preventDefault();
+        openShortcutsModal();
+      } else if (e.key >= '1' && e.key <= '9') {
+        const idx = parseInt(e.key, 10) - 1;
+        const chips = categoryPills.querySelectorAll<HTMLButtonElement>('.chip');
+        if (chips[idx]) {
+          e.preventDefault();
+          chips[idx].click();
+        }
+      }
+    }
+  });
+
+  // 3. Background Non-Blocking Connectivity Check
+  const token = getAuthToken();
+  if (token) {
+    fetchServerStatus()
+      .then((status) => {
+        if (status.authenticated) {
+          authModal.classList.add('hidden');
+          loadData().catch(() => {});
+        } else {
+          authModal.classList.remove('hidden');
+        }
+      })
+      .catch(() => {
+        // Phone offline: keep cached offline bookmarks displayed
+        setBadgeState('offline');
+        isOffline = true;
+        // In background, probe for phone in case IP changed
+        discoverPhoneServer()
+          .then((s) => {
+            if (s?.url) {
+              setServerBase(s.url);
+              updateServerLabel();
+            }
+          })
+          .catch(() => {});
+      });
+  } else if (!hadCache) {
+    authModal.classList.remove('hidden');
+    pinInput.value = '';
+    pinInput.focus();
+    discoverPhoneServer()
+      .then((s) => {
+        if (s?.url) {
+          setServerBase(s.url);
+          updateServerLabel();
+          if (authDiscoveryStatus) {
+            authDiscoveryStatus.textContent = `Found phone companion at ${s.url}! Enter PIN to connect.`;
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
+  // 4. Periodic background sync (every 10s)
   setInterval(async () => {
     const activeToken = getAuthToken();
     if (!activeToken || !authModal.classList.contains('hidden')) return;
@@ -330,116 +592,6 @@ async function initDesktopMode() {
       }
     }
   }, 10000);
-
-  // Desktop Event Listeners
-  btnConnect.addEventListener('click', () => submitPin(pinInput.value.trim()));
-  pinInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') submitPin(pinInput.value.trim());
-  });
-  pinInput.addEventListener('input', () => {
-    const val = pinInput.value.trim();
-    if (val.length === 6) submitPin(val);
-  });
-
-  btnDisconnect.addEventListener('click', () => {
-    setAuthToken(null);
-    allBookmarks = [];
-    renderBookmarks();
-    authModal.classList.remove('hidden');
-    pinInput.value = '';
-    showToast('Disconnected from phone');
-  });
-
-  btnOpenAddModal.addEventListener('click', () => {
-    addModal.classList.remove('hidden');
-    addUrl.value = '';
-    setTimeout(() => addUrl.focus(), 60);
-  });
-  btnCloseAddModal.addEventListener('click', () => addModal.classList.add('hidden'));
-  btnCancelAdd.addEventListener('click', () => addModal.classList.add('hidden'));
-
-  addBookmarkForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const url = addUrl.value.trim();
-    const cat = addCategory.value.trim() || 'Personal';
-    if (!url) return;
-
-    btnSaveBookmark.disabled = true;
-    btnSaveBookmark.textContent = 'Saving...';
-
-    try {
-      const res = await addBookmark(url, cat);
-      if (res.success) {
-        showToast('Bookmark synced to phone!');
-        addModal.classList.add('hidden');
-        await loadData();
-      } else {
-        showToast(res.error || 'Failed to save');
-      }
-    } catch {
-      showToast('Cannot connect to phone. Try again.');
-    } finally {
-      btnSaveBookmark.disabled = false;
-      btnSaveBookmark.textContent = 'Save Bookmark';
-    }
-  });
-
-  btnSettings.addEventListener('click', () => {
-    serverUrlInput.value = getServerBase();
-    settingsModal.classList.remove('hidden');
-  });
-  btnEditServerInAuth.addEventListener('click', () => {
-    serverUrlInput.value = getServerBase();
-    settingsModal.classList.remove('hidden');
-  });
-  btnCloseSettingsModal.addEventListener('click', () => settingsModal.classList.add('hidden'));
-  btnSaveSettings.addEventListener('click', () => {
-    const val = serverUrlInput.value.trim();
-    if (val) {
-      setServerBase(val);
-      updateServerLabel();
-      settingsModal.classList.add('hidden');
-      showToast(`Phone address updated: ${getServerBase()}`);
-    }
-  });
-
-  // Search input
-  searchInput.addEventListener('input', (e) => {
-    searchQuery = (e.target as HTMLInputElement).value;
-    renderBookmarks();
-  });
-
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    const active = document.activeElement;
-    const isInput = active && ['INPUT', 'TEXTAREA'].includes(active.tagName);
-
-    if (e.key === 'Escape') {
-      addModal.classList.add('hidden');
-      settingsModal.classList.add('hidden');
-      if (searchQuery) {
-        searchQuery = '';
-        searchInput.value = '';
-        renderBookmarks();
-      }
-    } else if (!isInput) {
-      if (e.key === '/') {
-        e.preventDefault();
-        searchInput.focus();
-      } else if (e.key === 'n' || e.key === 'N') {
-        e.preventDefault();
-        addModal.classList.remove('hidden');
-        setTimeout(() => addUrl.focus(), 60);
-      } else if (e.key >= '1' && e.key <= '9') {
-        const idx = parseInt(e.key, 10) - 1;
-        const chips = categoryPills.querySelectorAll<HTMLButtonElement>('.chip');
-        if (chips[idx]) {
-          e.preventDefault();
-          chips[idx].click();
-        }
-      }
-    }
-  });
 }
 
 // Setup & Initialization for Web Landing Mode

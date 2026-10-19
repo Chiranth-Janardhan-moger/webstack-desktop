@@ -24,7 +24,7 @@ async fn native_http_request(
     body: Option<String>,
 ) -> Result<HttpResponse, String> {
     let client = reqwest::Client::builder()
-        .timeout(Duration::from_secs(5))
+        .timeout(Duration::from_millis(2000))
         .build()
         .map_err(|e| e.to_string())?;
 
