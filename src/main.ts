@@ -94,7 +94,7 @@ function renderCategoryPills() {
   categoryPills.innerHTML = cats
     .map((cat) => {
       const active = currentCategory === cat ? ' active' : '';
-      const count = cat === 'ALL' ? currentTotal : allBookmarks.filter((b) => b.category.toLowerCase() === cat.toLowerCase()).length;
+      const count = cat === 'ALL' ? currentTotal : allBookmarks.filter((b) => (b.category || '').toLowerCase() === cat.toLowerCase()).length;
       return `<button class="chip${active}" data-cat="${cat}">${cat === 'ALL' ? 'All' : cat} (${count})</button>`;
     })
     .join('');
@@ -120,7 +120,7 @@ function getFaviconUrl(url: string): string {
 
 function escapeHtml(text: string): string {
   const div = document.createElement('div');
-  div.textContent = text;
+  div.textContent = text || '';
   return div.innerHTML;
 }
 
@@ -128,17 +128,17 @@ function renderBookmarks() {
   let filtered = allBookmarks;
 
   if (currentCategory !== 'ALL') {
-    filtered = filtered.filter((b) => b.category.toLowerCase() === currentCategory.toLowerCase());
+    filtered = filtered.filter((b) => (b.category || '').toLowerCase() === currentCategory.toLowerCase());
   }
 
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase().trim();
     filtered = filtered.filter(
       (b) =>
-        b.title.toLowerCase().includes(q) ||
-        b.url.toLowerCase().includes(q) ||
-        b.domain.toLowerCase().includes(q) ||
-        b.category.toLowerCase().includes(q)
+        (b.title || '').toLowerCase().includes(q) ||
+        (b.url || '').toLowerCase().includes(q) ||
+        (b.domain || '').toLowerCase().includes(q) ||
+        (b.category || '').toLowerCase().includes(q)
     );
   }
 
@@ -163,13 +163,13 @@ function renderBookmarks() {
               ${favicon ? `<img src="${favicon}" alt="" onerror="this.style.display='none'">` : ''}
             </div>
             <div class="card-info">
-              <div class="card-title" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</div>
-              <div class="card-domain">${escapeHtml(b.domain)}</div>
+              <div class="card-title" title="${escapeHtml(b.title || b.url)}">${escapeHtml(b.title || b.url)}</div>
+              <div class="card-domain">${escapeHtml(b.domain || extractDomain(b.url))}</div>
             </div>
           </div>
           <div class="card-bottom">
             <div style="display: flex; align-items: center;">
-              <span class="card-tag">${escapeHtml(b.category)}</span>
+              <span class="card-tag">${escapeHtml(b.category || 'Personal')}</span>
               ${pendingBadge}
             </div>
             <div class="card-actions">
@@ -448,11 +448,27 @@ function initDesktopMode() {
       try {
         const res = await addBookmark(url, cat);
         if (res.success) {
-          showToast('Bookmark synced to phone!');
+          const newBm: Bookmark = {
+            id: res.id ? String(res.id) : ('bm_' + Date.now()),
+            title: res.title || url,
+            url: res.url || url,
+            domain: res.domain || extractDomain(url),
+            category: cat,
+            createdAtMs: Date.now(),
+            isPendingSync: false,
+          };
+          allBookmarks.unshift(newBm);
+          if (!availableCategories.some((c) => c.toLowerCase() === cat.toLowerCase())) {
+            availableCategories.push(cat);
+          }
+          localStorage.setItem('webstack_desktop_cached_bookmarks', JSON.stringify(allBookmarks));
           closeAddModal();
-          await loadData();
+          renderCategoryPills();
+          renderBookmarks();
+          showToast('Bookmark synced to phone!');
           btnSaveBookmark.disabled = false;
           btnSaveBookmark.textContent = 'Save Bookmark';
+          loadData().catch(() => {});
           return;
         } else if (res.error && res.error.toLowerCase().includes('already in your stack')) {
           showToast(res.error);
@@ -478,8 +494,12 @@ function initDesktopMode() {
       isPendingSync: true,
     };
     allBookmarks.unshift(offlineBm);
+    if (!availableCategories.some((c) => c.toLowerCase() === cat.toLowerCase())) {
+      availableCategories.push(cat);
+    }
     localStorage.setItem('webstack_desktop_cached_bookmarks', JSON.stringify(allBookmarks));
     closeAddModal();
+    renderCategoryPills();
     renderBookmarks();
     showToast('Saved offline. Will sync when phone connects.');
     btnSaveBookmark.disabled = false;
