@@ -270,10 +270,14 @@ async function initDesktopMode() {
   // Try Auto-Discovery in background
   discoverPhoneServer()
     .then((server) => {
-      if (server) {
+      if (server && server.url) {
+        setServerBase(server.url);
         updateServerLabel();
         if (authDiscoveryStatus) {
-          authDiscoveryStatus.textContent = `Found phone companion at ${server.url}!`;
+          authDiscoveryStatus.textContent = `Found phone companion at ${server.url}! Enter PIN to connect.`;
+        }
+        if (pinInput && document.activeElement !== pinInput) {
+          pinInput.focus();
         }
       }
     })
