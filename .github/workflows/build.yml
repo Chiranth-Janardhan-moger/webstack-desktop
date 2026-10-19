@@ -46,6 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          args: --no-version-check
           tagName: ${{ inputs.release_tag || github.ref_name }}
           releaseName: 'WebStack Desktop ${{ inputs.release_tag || github.ref_name }}'
           releaseBody: 'Native desktop client for WebStack powered by Tauri v2 and native WebView2 (~3.5 MB).'
