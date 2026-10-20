@@ -104,7 +104,8 @@ function renderCategoryPills() {
     .map((cat) => {
       const active = currentCategory === cat ? ' active' : '';
       const count = cat === 'ALL' ? currentTotal : allBookmarks.filter((b) => (b.category || '').toLowerCase() === cat.toLowerCase()).length;
-      return `<button class="chip${active}" data-cat="${cat}">${cat === 'ALL' ? 'All' : cat} (${count})</button>`;
+      const label = cat === 'ALL' ? 'All' : cat;
+      return `<button class="chip${active}" data-cat="${cat}"><span>${escapeHtml(label)}</span><span class="chip-count">${count}</span></button>`;
     })
     .join('');
 
@@ -153,37 +154,68 @@ function renderBookmarks() {
 
   if (filtered.length === 0) {
     bookmarksGrid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); color: var(--text-muted);">
-        <p style="font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px;">No bookmarks found</p>
-        <p style="font-size: 13px;">${searchQuery ? 'Try adjusting your search terms' : 'Add bookmarks from your phone or click (+) Add'}</p>
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <h3 class="empty-state-title">No bookmarks found</h3>
+        <p class="empty-state-desc">${searchQuery ? 'Try adjusting your search query or clear the filter.' : 'Your stack is empty. Click below or press N to add a bookmark.'}</p>
+        ${!searchQuery ? `<button type="button" id="btnEmptyAdd" class="btn-primary" style="margin-top: 14px;">+ Add Bookmark</button>` : ''}
       </div>
     `;
+    const btnEmptyAdd = document.getElementById('btnEmptyAdd');
+    if (btnEmptyAdd) btnEmptyAdd.addEventListener('click', openAddModal);
     return;
   }
 
   bookmarksGrid.innerHTML = filtered
     .map((b) => {
+      const domain = b.domain || extractDomain(b.url);
       const favicon = getFaviconUrl(b.url);
-      const pendingBadge = b.isPendingSync ? `<span class="badge-pending-sync" title="Will sync when connected to phone">Pending Sync</span>` : '';
+      const domainInitial = (domain || 'W').charAt(0).toUpperCase();
+      const pendingBadge = b.isPendingSync ? `<span class="badge-pending-sync" title="Will sync when connected to phone">Pending</span>` : '';
       return `
         <div class="bookmark-card" data-url="${escapeHtml(b.url)}">
           <div class="card-top">
             <div class="favicon">
-              ${favicon ? `<img src="${favicon}" alt="" onerror="this.style.display='none'">` : ''}
+              ${favicon ? `<img src="${favicon}" alt="" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+              <span class="favicon-fallback" style="${favicon ? 'display: none;' : 'display: flex;'}">${escapeHtml(domainInitial)}</span>
             </div>
             <div class="card-info">
               <div class="card-title" title="${escapeHtml(b.title || b.url)}">${escapeHtml(b.title || b.url)}</div>
-              <div class="card-domain">${escapeHtml(b.domain || extractDomain(b.url))}</div>
+              <div class="card-domain">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span>${escapeHtml(domain)}</span>
+              </div>
             </div>
           </div>
           <div class="card-bottom">
-            <div style="display: flex; align-items: center;">
+            <div class="card-bottom-left">
               <span class="card-tag">${escapeHtml(b.category || 'Personal')}</span>
               ${pendingBadge}
             </div>
             <div class="card-actions">
-              <button class="action-btn btn-copy" data-url="${escapeHtml(b.url)}" title="Copy URL">Copy</button>
-              <button class="action-btn btn-open" data-url="${escapeHtml(b.url)}" title="Open in Browser">Open ↗</button>
+              <button class="action-btn btn-copy" data-url="${escapeHtml(b.url)}" title="Copy Link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+              <button class="action-btn btn-open" data-url="${escapeHtml(b.url)}" title="Open in Browser">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                <span>Open</span>
+              </button>
             </div>
           </div>
         </div>
@@ -454,10 +486,23 @@ function initDesktopMode() {
   });
 
   // Search input and clear button
+  const kbdSearchHint = document.getElementById('kbdSearchHint') as HTMLElement | null;
+
+  searchInput.addEventListener('focus', () => {
+    if (kbdSearchHint) kbdSearchHint.style.opacity = '0';
+  });
+
+  searchInput.addEventListener('blur', () => {
+    if (kbdSearchHint && !searchInput.value) kbdSearchHint.style.opacity = '1';
+  });
+
   searchInput.addEventListener('input', (e) => {
     searchQuery = (e.target as HTMLInputElement).value;
     if (btnClearSearch) {
       btnClearSearch.style.display = searchQuery ? 'flex' : 'none';
+    }
+    if (kbdSearchHint) {
+      kbdSearchHint.style.opacity = searchQuery ? '0' : '1';
     }
     renderBookmarks();
   });
@@ -467,6 +512,7 @@ function initDesktopMode() {
       searchInput.value = '';
       searchQuery = '';
       btnClearSearch.style.display = 'none';
+      if (kbdSearchHint) kbdSearchHint.style.opacity = '1';
       renderBookmarks();
       searchInput.focus();
     });
