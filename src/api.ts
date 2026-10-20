@@ -313,6 +313,9 @@ export async function flushOfflineQueue(): Promise<number> {
       const res = await addBookmark(item.url, item.category);
       if (res.success || (res.error && res.error.toLowerCase().includes('already in your stack'))) {
         flushed++;
+      } else if (res.error && (res.error.toLowerCase().includes('invalid') || res.error.toLowerCase().includes('cannot') || res.error.toLowerCase().includes('empty'))) {
+        // Discard permanently unrecoverable client validation errors to prevent queue poisoning
+        console.warn('Discarding rejected queue item:', item.url, res.error);
       } else {
         remaining.push(item);
       }

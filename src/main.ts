@@ -142,14 +142,11 @@ function renderBookmarks() {
   }
 
   if (searchQuery.trim()) {
-    const q = searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(
-      (b) =>
-        (b.title || '').toLowerCase().includes(q) ||
-        (b.url || '').toLowerCase().includes(q) ||
-        (b.domain || '').toLowerCase().includes(q) ||
-        (b.category || '').toLowerCase().includes(q)
-    );
+    const tokens = searchQuery.toLowerCase().trim().split(/\s+/);
+    filtered = filtered.filter((b) => {
+      const combined = `${b.title || ''} ${b.url || ''} ${b.domain || ''} ${b.category || ''}`.toLowerCase();
+      return tokens.every((token) => combined.includes(token));
+    });
   }
 
   if (filtered.length === 0) {
@@ -238,8 +235,9 @@ function renderBookmarks() {
       e.stopPropagation();
       const url = btn.getAttribute('data-url');
       if (url) {
-        navigator.clipboard.writeText(url);
-        showToast('Copied URL to clipboard');
+        navigator.clipboard.writeText(url)
+          .then(() => showToast('Copied URL to clipboard'))
+          .catch(() => showToast('Copied: ' + url));
       }
     });
   });
@@ -251,6 +249,24 @@ function renderBookmarks() {
       if (url) openUrlInBrowser(url);
     });
   });
+}
+
+function handleSessionExpired() {
+  setAuthToken(null);
+  authModal.classList.remove('hidden');
+  if (authError) {
+    authError.style.display = 'block';
+    authError.textContent = 'Session expired. Enter the PIN shown on your phone to reconnect.';
+  }
+  if (authDiscoveryStatus) {
+    authDiscoveryStatus.textContent = 'Phone connected · Re-authentication required';
+  }
+  if (pinInput) {
+    pinInput.value = '';
+    pinInput.focus();
+  }
+  setBadgeState('offline');
+  isOffline = true;
 }
 
 // 0ms Optimistic local cache hydration
@@ -278,7 +294,9 @@ function hydrateFromCache(): boolean {
   } catch {}
 
   if (hasData) {
-    authModal.classList.add('hidden');
+    if (getAuthToken()) {
+      authModal.classList.add('hidden');
+    }
     setBadgeState('offline');
     isOffline = true;
     renderCategoryPills();
@@ -310,7 +328,12 @@ async function loadData() {
         localStorage.setItem('webstack_desktop_cached_bookmarks', JSON.stringify(updated));
       } catch {}
     }
-  } catch (err) {
+  } catch (err: any) {
+    const msg = String(err?.message || err);
+    if (msg.includes('401') || msg.includes('Unauthorized')) {
+      handleSessionExpired();
+      return;
+    }
     isOffline = true;
     setBadgeState('offline');
     if (allBookmarks.length === 0) {
@@ -387,10 +410,15 @@ function closeSettingsModal() {
 function disconnect() {
   setAuthToken(null);
   allBookmarks = [];
+  localStorage.removeItem('webstack_desktop_cached_bookmarks');
+  localStorage.removeItem('webstack_desktop_cached_categories');
+  localStorage.removeItem('webstack_desktop_offline_queue');
   renderCategoryPills();
   renderBookmarks();
   authModal.classList.remove('hidden');
+  if (authError) authError.style.display = 'none';
   pinInput.value = '';
+  pinInput.focus();
   showToast('Disconnected from phone');
 }
 
@@ -485,6 +513,20 @@ function initDesktopMode() {
     }
   });
 
+  // Interactive connection status badge
+  if (statusBadge) {
+    statusBadge.style.cursor = 'pointer';
+    statusBadge.title = 'Click to connect or view status';
+    statusBadge.addEventListener('click', () => {
+      if (isOffline || !getAuthToken()) {
+        authModal.classList.remove('hidden');
+        pinInput.focus();
+      } else {
+        showToast('Connected to phone companion');
+      }
+    });
+  }
+
   // Search input and clear button
   const kbdSearchHint = document.getElementById('kbdSearchHint') as HTMLElement | null;
 
@@ -556,15 +598,14 @@ function initDesktopMode() {
           btnSaveBookmark.textContent = 'Save Bookmark';
           loadData().catch(() => {});
           return;
-        } else if (res.error && res.error.toLowerCase().includes('already in your stack')) {
+        } else if (res.error) {
           showToast(res.error);
-          closeAddModal();
           btnSaveBookmark.disabled = false;
           btnSaveBookmark.textContent = 'Save Bookmark';
           return;
         }
       } catch (err) {
-        // Fall through to offline queue
+        // Network connection error -> fall through to offline queue
       }
     }
 
@@ -642,10 +683,15 @@ function initDesktopMode() {
           authModal.classList.add('hidden');
           loadData().catch(() => {});
         } else {
-          authModal.classList.remove('hidden');
+          handleSessionExpired();
         }
       })
-      .catch(() => {
+      .catch((err: any) => {
+        const msg = String(err?.message || err);
+        if (msg.includes('401') || msg.includes('Unauthorized')) {
+          handleSessionExpired();
+          return;
+        }
         // Phone offline: keep cached offline bookmarks displayed
         setBadgeState('offline');
         isOffline = true;
@@ -690,8 +736,15 @@ function initDesktopMode() {
         }
         setBadgeState('online');
         isOffline = false;
+      } else {
+        handleSessionExpired();
       }
-    } catch {
+    } catch (err: any) {
+      const msg = String(err?.message || err);
+      if (msg.includes('401') || msg.includes('Unauthorized')) {
+        handleSessionExpired();
+        return;
+      }
       if (!isOffline) {
         setBadgeState('offline');
         isOffline = true;
