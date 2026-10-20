@@ -4,6 +4,7 @@ use discovery::{probe_network, DiscoveredServer};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Duration;
+use tauri_plugin_shell::ShellExt;
 
 #[derive(Serialize, Deserialize)]
 pub struct HttpResponse {
@@ -56,6 +57,31 @@ async fn native_http_request(
 }
 
 #[tauri::command]
+fn open_in_browser(app: tauri::AppHandle, url: String) -> Result<(), String> {
+    if let Err(_) = app.shell().open(&url, None) {
+        #[cfg(target_os = "windows")]
+        {
+            let _ = std::process::Command::new("cmd")
+                .args(["/c", "start", "", &url])
+                .spawn();
+        }
+        #[cfg(target_os = "linux")]
+        {
+            let _ = std::process::Command::new("xdg-open")
+                .arg(&url)
+                .spawn();
+        }
+        #[cfg(target_os = "macos")]
+        {
+            let _ = std::process::Command::new("open")
+                .arg(&url)
+                .spawn();
+        }
+    }
+    Ok(())
+}
+
+#[tauri::command]
 fn close_window(window: tauri::Window) {
     let _ = window.close();
 }
@@ -86,8 +112,9 @@ pub fn run() {
             native_http_request,
             close_window,
             minimize_window,
-            toggle_maximize_window
+            toggle_maximize_window,
+            open_in_browser
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running WebStack desktop application");
+    .run(tauri::generate_context!())
+    .expect("error while running WebStack desktop application");
 }

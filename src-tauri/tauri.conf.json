@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "WebStack",
         "width": 1200,
         "height": 800,

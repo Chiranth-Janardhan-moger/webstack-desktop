@@ -238,14 +238,23 @@ export async function addBookmark(url: string, category: string): Promise<any> {
 }
 
 export async function openUrlInBrowser(url: string): Promise<void> {
+  const cleanUrl = normalizeUrl(url);
+  if (!cleanUrl) return;
+
   if (isTauri()) {
     try {
-      const { open } = await import('@tauri-apps/plugin-shell');
-      await open(url);
+      await invokeTauri('open_in_browser', { url: cleanUrl });
       return;
-    } catch {}
+    } catch (e) {
+      console.warn('Native open_in_browser command failed, attempting plugin fallback:', e);
+      try {
+        const { open } = await import('@tauri-apps/plugin-shell');
+        await open(cleanUrl);
+        return;
+      } catch {}
+    }
   }
-  window.open(url, '_blank');
+  window.open(cleanUrl, '_blank');
 }
 
 export function normalizeUrl(raw: string): string {

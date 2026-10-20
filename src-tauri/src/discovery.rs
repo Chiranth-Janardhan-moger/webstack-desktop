@@ -47,16 +47,18 @@ async fn scan_subnet(base: [u8; 3], port: u16) -> Option<DiscoveredServer> {
 }
 
 pub async fn probe_network() -> Option<DiscoveredServer> {
-    // 1. Attempt UDP broadcast discovery probe on port 8080
-    if let (Ok(broadcast_addr), Ok(bind_addr)) = (
-        "255.255.255.255:8080".parse::<SocketAddr>(),
-        "0.0.0.0:0".parse::<SocketAddr>(),
-    ) {
+    // 1. Attempt UDP broadcast discovery probe on ports 8080, 8081, 8082
+    let ports = [8080u16, 8081u16, 8082u16];
+    if let Ok(bind_addr) = "0.0.0.0:0".parse::<SocketAddr>() {
         if let Ok(socket) = UdpSocket::bind(bind_addr) {
             let _ = socket.set_broadcast(true);
             let _ = socket.set_read_timeout(Some(Duration::from_millis(500)));
             let ping = b"WEBSTACK_DISCOVER_PROBE";
-            let _ = socket.send_to(ping, broadcast_addr);
+            for &p in &ports {
+                if let Ok(broadcast_addr) = format!("255.255.255.255:{}", p).parse::<SocketAddr>() {
+                    let _ = socket.send_to(ping, broadcast_addr);
+                }
+            }
 
             let mut buf = [0u8; 512];
             if let Ok((len, src)) = socket.recv_from(&mut buf) {
@@ -96,8 +98,10 @@ pub async fn probe_network() -> Option<DiscoveredServer> {
     // 2. Subnet scan fallback if UDP broadcast was blocked by router
     if let Some(local_ip) = get_local_ipv4() {
         let octets = local_ip.octets();
-        if let Some(server) = scan_subnet([octets[0], octets[1], octets[2]], 8080).await {
-            return Some(server);
+        for &p in &ports {
+            if let Some(server) = scan_subnet([octets[0], octets[1], octets[2]], p).await {
+                return Some(server);
+            }
         }
     }
 

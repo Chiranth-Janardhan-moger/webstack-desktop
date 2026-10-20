@@ -310,6 +310,19 @@ await test('normalizeUrl correctly prepends https to bare domains', () => {
   assert.strictEqual(normalizeUrl('   '), '');
 });
 
+await test('cleanUrl validation prepares safe URLs for native browser dispatch', () => {
+  // URLs clicked on cards or open buttons must be cleanly validated and formatted
+  const sampleUrls = [
+    { input: 'google.com', expected: 'https://google.com' },
+    { input: 'https://news.ycombinator.com', expected: 'https://news.ycombinator.com' },
+    { input: 'http://192.168.1.50:8080', expected: 'http://192.168.1.50:8080' },
+    { input: '   ', expected: '' }
+  ];
+  for (const sample of sampleUrls) {
+    assert.strictEqual(normalizeUrl(sample.input), sample.expected);
+  }
+});
+
 await test('extractDomain handles diverse URL structures', () => {
   assert.strictEqual(extractDomain('https://www.google.com/search?q=tauri'), 'google.com');
   assert.strictEqual(extractDomain('https://sub.domain.co.uk/path/file'), 'sub.domain.co.uk');
@@ -426,6 +439,46 @@ await test('Search filter finds multi-word out-of-order queries', () => {
   // Non-matching query returns empty array
   const empty = filterBookmarks(sample, 'ALL', 'nonexistent query 12345');
   assert.strictEqual(empty.length, 0);
+});
+
+// -------------------------------------------------------------
+// 7. Offline Disconnect & Reconnect Session Persistence Test
+// -------------------------------------------------------------
+await test('Phone companion restart with persistent session token reconnects seamlessly without 401', async () => {
+  // Step 1: Client has active paired session
+  let clientSavedToken = mockToken;
+
+  // Step 2: Phone goes offline
+  isServerOnline = false;
+  let connectionFailed = false;
+  try {
+    await fetch(`${BASE_URL}/api/status`, {
+      headers: { Authorization: `Bearer ${clientSavedToken}` }
+    });
+  } catch {
+    connectionFailed = true;
+  }
+  assert.strictEqual(connectionFailed, true, 'Client should detect server offline');
+
+  // Step 3: Phone turns back on with preserved session token
+  isServerOnline = true;
+
+  // Step 4: Client background poll checks server with stored token
+  const statusRes = await fetch(`${BASE_URL}/api/status`, {
+    headers: { Authorization: `Bearer ${clientSavedToken}` }
+  });
+  assert.strictEqual(statusRes.status, 200, 'Server should accept preserved session token');
+  const statusData = await statusRes.json();
+  assert.strictEqual(statusData.authenticated, true, 'Session should remain authenticated');
+
+  // Step 5: Data sync succeeds immediately without session expiration modal
+  const bmsRes = await fetch(`${BASE_URL}/api/bookmarks`, {
+    headers: { Authorization: `Bearer ${clientSavedToken}` }
+  });
+  assert.strictEqual(bmsRes.status, 200);
+  const bms = await bmsRes.json();
+  assert(Array.isArray(bms));
+  assert(bms.length > 0);
 });
 
 // Close server

@@ -517,8 +517,26 @@ function initDesktopMode() {
   if (statusBadge) {
     statusBadge.style.cursor = 'pointer';
     statusBadge.title = 'Click to connect or view status';
-    statusBadge.addEventListener('click', () => {
+    statusBadge.addEventListener('click', async () => {
       if (isOffline || !getAuthToken()) {
+        setBadgeState('searching');
+        try {
+          const discovered = await discoverPhoneServer();
+          if (discovered?.url) {
+            setServerBase(discovered.url);
+            updateServerLabel();
+          }
+          if (getAuthToken()) {
+            const s = await fetchServerStatus();
+            if (s.authenticated) {
+              showToast('Reconnected to phone!');
+              await loadData();
+              setBadgeState('online');
+              isOffline = false;
+              return;
+            }
+          }
+        } catch {}
         authModal.classList.remove('hidden');
         pinInput.focus();
       } else {
@@ -727,6 +745,17 @@ function initDesktopMode() {
     const activeToken = getAuthToken();
     if (!activeToken || !authModal.classList.contains('hidden')) return;
 
+    // If currently offline, probe network to discover phone if IP or port changed
+    if (isOffline) {
+      try {
+        const discovered = await discoverPhoneServer();
+        if (discovered?.url && discovered.url !== getServerBase()) {
+          setServerBase(discovered.url);
+          updateServerLabel();
+        }
+      } catch {}
+    }
+
     try {
       const status = await fetchServerStatus();
       if (status.authenticated) {
@@ -749,6 +778,25 @@ function initDesktopMode() {
         setBadgeState('offline');
         isOffline = true;
       }
+      // On connection failure, trigger background auto-discovery in case phone IP changed
+      discoverPhoneServer()
+        .then((discovered) => {
+          if (discovered?.url && discovered.url !== getServerBase()) {
+            setServerBase(discovered.url);
+            updateServerLabel();
+            fetchServerStatus()
+              .then((s) => {
+                if (s.authenticated) {
+                  showToast('Reconnected to phone!');
+                  loadData().catch(() => {});
+                  setBadgeState('online');
+                  isOffline = false;
+                }
+              })
+              .catch(() => {});
+          }
+        })
+        .catch(() => {});
     }
   }, 10000);
 }
