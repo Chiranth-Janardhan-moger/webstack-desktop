@@ -95,22 +95,106 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
+  -webkit-app-region: drag;
+  app-region: drag;
+  user-select: none;
 }
 
 .header-inner {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 12px 24px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+/* macOS Traffic Light Window Controls */
+.window-controls-mac {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.mac-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  background: transparent;
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), filter 0.12s ease;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  box-sizing: border-box;
+}
+
+.mac-dot:active {
+  transform: scale(0.88);
+}
+
+.mac-dot-close {
+  background: #FF5F56;
+  border-color: #E0443E;
+  color: #4D0000;
+}
+
+.mac-dot-minimize {
+  background: #FFBD2E;
+  border-color: #DEA123;
+  color: #5A3C00;
+}
+
+.mac-dot-maximize {
+  background: #27C93F;
+  border-color: #1AAB29;
+  color: #003300;
+}
+
+.mac-dot-icon {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  pointer-events: none;
+  display: block;
+}
+
+/* Hover reveals symbols across dots */
+.window-controls-mac:hover .mac-dot-icon,
+.mac-dot:hover .mac-dot-icon {
+  opacity: 0.85;
+}
+
+.mac-dot:hover {
+  filter: brightness(0.94);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .brand-icon {
@@ -168,6 +252,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .search-nav {

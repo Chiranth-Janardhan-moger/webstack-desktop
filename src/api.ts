@@ -324,3 +324,33 @@ export async function flushOfflineQueue(): Promise<number> {
   saveOfflineQueue(remaining);
   return flushed;
 }
+
+export async function closeWindow(): Promise<void> {
+  if (isTauri()) {
+    try {
+      await invokeTauri('close_window');
+    } catch (e) {
+      console.warn('Failed to close window:', e);
+    }
+  }
+}
+
+export async function minimizeWindow(): Promise<void> {
+  if (isTauri()) {
+    try {
+      await invokeTauri('minimize_window');
+    } catch (e) {
+      console.warn('Failed to minimize window:', e);
+    }
+  }
+}
+
+export async function toggleMaximizeWindow(): Promise<void> {
+  if (isTauri()) {
+    try {
+      await invokeTauri('toggle_maximize_window');
+    } catch (e) {
+      console.warn('Failed to toggle maximize window:', e);
+    }
+  }
+}

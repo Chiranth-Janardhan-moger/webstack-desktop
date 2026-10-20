@@ -15,6 +15,9 @@ import {
   extractDomain,
   enqueueOfflineBookmark,
   flushOfflineQueue,
+  closeWindow,
+  minimizeWindow,
+  toggleMaximizeWindow,
 } from './api';
 import type { Bookmark } from './types';
 
@@ -65,6 +68,12 @@ const settingsModal = document.getElementById('settingsModal') as HTMLDivElement
 const btnCloseSettingsModal = document.getElementById('btnCloseSettingsModal') as HTMLButtonElement;
 const serverUrlInput = document.getElementById('serverUrlInput') as HTMLInputElement;
 const btnSaveSettings = document.getElementById('btnSaveSettings') as HTMLButtonElement;
+
+// Window Controls (Apple Traffic Lights)
+const btnWindowClose = document.getElementById('btnWindowClose') as HTMLButtonElement | null;
+const btnWindowMinimize = document.getElementById('btnWindowMinimize') as HTMLButtonElement | null;
+const btnWindowMaximize = document.getElementById('btnWindowMaximize') as HTMLButtonElement | null;
+const appHeader = document.querySelector('.app-header') as HTMLElement | null;
 
 const toast = document.getElementById('toast') as HTMLDivElement;
 
@@ -371,6 +380,37 @@ function initDesktopMode() {
       submitPin(val);
     }
   });
+
+  // Window controls (Apple Traffic Lights)
+  if (btnWindowClose) {
+    btnWindowClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeWindow();
+    });
+  }
+
+  if (btnWindowMinimize) {
+    btnWindowMinimize.addEventListener('click', (e) => {
+      e.stopPropagation();
+      minimizeWindow();
+    });
+  }
+
+  if (btnWindowMaximize) {
+    btnWindowMaximize.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMaximizeWindow();
+    });
+  }
+
+  if (appHeader) {
+    appHeader.addEventListener('dblclick', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('button, input, a, .window-controls-mac, .header-actions')) {
+        toggleMaximizeWindow();
+      }
+    });
+  }
 
   btnDisconnect.addEventListener('click', disconnect);
   btnOpenAddModal.addEventListener('click', openAddModal);
