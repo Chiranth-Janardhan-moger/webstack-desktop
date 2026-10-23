@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebStack · Lightweight & Offline-First Bookmark Sync</title>
   <meta name="description" content="Ultra-lightweight (~3.6 MB) native desktop client and Android bookmark manager. Sync bookmarks instantly and privately over local Wi-Fi. Zero cloud.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111827'><path d='M12 2L3 21L12 14.5L21 21Z'/></svg>">
 </head>
@@ -17,41 +20,49 @@
     <!-- Navbar -->
     <nav class="web-nav">
       <div class="web-nav-inner">
-        <a href="/" class="brand" style="text-decoration: none; color: inherit;">
-          <div class="brand-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <a href="/" class="brand-editorial" style="text-decoration: none; color: inherit;">
+          <div class="brand-symbol">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L3 21L12 14.5L21 21Z" />
             </svg>
           </div>
-          <div class="brand-title">WebStack</div>
+          <span class="brand-wordmark">WebStack</span>
+          <span class="brand-edition-tag">SYSTEMS</span>
         </a>
 
         <div class="web-nav-links">
-          <a href="#features" class="nav-link">Features</a>
-          <a href="#how-it-works" class="nav-link">How it Works</a>
-          <a href="#download" class="nav-link active">Download</a>
+          <a href="#principles" class="nav-link">Principles</a>
+          <a href="#architecture" class="nav-link">Architecture</a>
+          <a href="#how-it-works" class="nav-link">Protocol</a>
+          <a href="#download" class="nav-link active">Releases</a>
           <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop" target="_blank" rel="noopener noreferrer" class="nav-link github-nav-link">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
             </svg>
             <span>GitHub</span>
           </a>
-          <a href="#download" class="btn-primary btn-nav-cta">Get WebStack</a>
+          <a href="#download" class="btn-primary btn-nav-cta">Download Client</a>
         </div>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <header class="hero-section">
       <div class="hero-inner">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span>
-          <span>v1.0.0 Now Available · Windows & Linux Desktop</span>
+        <div class="editorial-meta-kicker">
+          <span class="kicker-tag">[ RELEASE &middot; v1.0.0 ]</span>
+          <span class="kicker-divider">/</span>
+          <span class="kicker-sub">OFFLINE PEER-TO-PEER DATA PLANE</span>
         </div>
-        <h1 class="hero-headline">Private Bookmark Sync.<br>Zero Cloud. Native Speed.</h1>
+
+        <h1 class="hero-headline">
+          Private bookmark sync.<br>
+          <em>Zero cloud. Native speed.</em>
+        </h1>
+
         <p class="hero-subheadline">
-          WebStack is an ultra-lightweight (~3.6 MB) native desktop app and companion for Android.
-          Sync your bookmarks peer-to-peer over your local Wi-Fi without third-party servers, accounts, or telemetry.
+          WebStack bridges your Android vault to a lean desktop client across your local Wi-Fi subnet.
+          Engineered without third-party telemetry, remote databases, or Chromium runtime bloat.
         </p>
 
         <div class="hero-cta-group">
@@ -68,18 +79,70 @@
           </a>
         </div>
 
-        <div class="hero-specs-row">
-          <div class="spec-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-            <span>~3.6 MB Native Binary (No Chromium)</span>
+        <!-- Architectural Metrics Grid -->
+        <div class="hero-specs-strip">
+          <div class="spec-cell">
+            <span class="spec-mono-val">~3.6 MB</span>
+            <span class="spec-label">Native Binary Footprint</span>
           </div>
-          <div class="spec-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            <span>Peer-to-Peer Wi-Fi Sync</span>
+          <div class="spec-cell">
+            <span class="spec-mono-val">P2P Wi-Fi</span>
+            <span class="spec-label">Direct Subnet Transport</span>
           </div>
-          <div class="spec-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span>100% Offline Vault</span>
+          <div class="spec-cell">
+            <span class="spec-mono-val">0 ms</span>
+            <span class="spec-label">External Cloud Latency</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-mono-val">100%</span>
+            <span class="spec-label">Offline Vault Persistence</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Architectural Schematic Board -->
+    <section id="architecture" class="schematic-section">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="editorial-section-kicker">[ ARCHITECTURAL SCHEMATIC ]</div>
+          <h2 class="section-title">The Local Data Plane</h2>
+          <p class="section-desc">
+            How WebStack synchronizes your private bookmark archive directly between devices without passing through external infrastructure.
+          </p>
+        </div>
+
+        <div class="schematic-board">
+          <div class="schematic-node node-mobile">
+            <div class="node-badge">NODE A &middot; MOBILE</div>
+            <div class="node-title">Android Vault</div>
+            <div class="node-mono">SQLite + Embedded HTTP</div>
+            <ul class="node-specs">
+              <li>AES-256 local encrypted store</li>
+              <li>Local daemon on port 8080</li>
+              <li>Zero telemetry / zero Play Svcs</li>
+            </ul>
+          </div>
+
+          <div class="schematic-conduit">
+            <div class="conduit-line">
+              <span class="conduit-pulse"></span>
+            </div>
+            <div class="conduit-tag">
+              <span class="conduit-label">ENCRYPTED LOCAL WI-FI SUBNET</span>
+              <span class="conduit-sub">Ephemeral 6-digit PIN handshake</span>
+            </div>
+          </div>
+
+          <div class="schematic-node node-desktop">
+            <div class="node-badge">NODE B &middot; DESKTOP</div>
+            <div class="node-title">Desktop Client</div>
+            <div class="node-mono">Tauri v2 + WebView2</div>
+            <ul class="node-specs">
+              <li>Instant fuzzy keyboard recall</li>
+              <li>Sub-40 MB memory consumption</li>
+              <li>Permanent local snapshot cache</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -89,24 +152,24 @@
     <section id="download" class="download-section">
       <div class="section-container">
         <div class="section-header">
-          <span class="section-tag">Downloads & Releases</span>
-          <h2 class="section-title">Download WebStack for Your Platform</h2>
-          <p class="section-desc">Zero bloat, zero dependencies. Choose your operating system below to install in seconds.</p>
+          <div class="editorial-section-kicker">[ DOWNLOADS & RELEASES ]</div>
+          <h2 class="section-title">Verified Binary Distributions</h2>
+          <p class="section-desc">Standalone, zero-dependency release packages compiled for modern operating systems.</p>
         </div>
 
         <div class="platforms-grid">
           <!-- Windows Card -->
           <div class="platform-card platform-card-featured">
-            <div class="card-featured-badge">Recommended</div>
+            <div class="card-featured-badge">RECOMMENDED</div>
             <div class="platform-icon-wrap">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.951-1.801"/>
               </svg>
             </div>
             <h3 class="platform-name">Windows</h3>
-            <p class="platform-meta">Windows 10 / 11 (64-bit) · v1.0.0 · ~3.6 MB</p>
+            <div class="platform-meta-badge">Windows 10 / 11 &middot; x64 &middot; ~3.6 MB</div>
             <p class="platform-details">
-              Standalone Windows desktop app powered by Tauri v2 and native WebView2. Integrates directly into your Start Menu and Taskbar.
+              Standalone Windows executable powered by Tauri v2 and native WebView2. Integrates directly into your Windows desktop, start menu, and taskbar.
             </p>
 
             <div class="platform-actions">
@@ -120,26 +183,26 @@
               </a>
 
               <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases/latest/download/WebStack_1.0.0_x64_en-US.msi" class="link-download-sub">
-                Or download Windows MSI (.msi)
+                Enterprise MSI Package (.msi)
               </a>
             </div>
 
             <ul class="platform-highlights">
-              <li>Auto-detects phone companion on Wi-Fi</li>
+              <li>Automatic local phone discovery on Wi-Fi</li>
               <li>Zero CORS / mixed-content restrictions</li>
-              <li>Under 40 MB memory usage</li>
+              <li>Under 40 MB memory consumption</li>
             </ul>
           </div>
 
           <!-- Linux Card -->
           <div class="platform-card">
             <div class="platform-icon-wrap">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/>
               </svg>
             </div>
             <h3 class="platform-name">Linux</h3>
-            <p class="platform-meta">Ubuntu / Debian / Fedora / Arch · v1.0.0 · ~3.2 MB</p>
+            <div class="platform-meta-badge">Ubuntu / Debian / Fedora / Arch &middot; ~3.2 MB</div>
             <p class="platform-details">
               Lightweight portable Linux client. High performance, zero daemon overhead, and native WebKitGTK rendering.
             </p>
@@ -155,28 +218,28 @@
               </a>
 
               <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases/latest/download/WebStack_1.0.0_amd64.deb" class="link-download-sub">
-                Or download Debian / Ubuntu package (.deb)
+                Debian / Ubuntu Package (.deb)
               </a>
             </div>
 
             <ul class="platform-highlights">
-              <li>Portable AppImage & Debian package</li>
-              <li>Fully open source build</li>
-              <li>Zero telemetry or tracking</li>
+              <li>Portable AppImage &amp; Debian binary</li>
+              <li>100% open source reproducible build</li>
+              <li>Zero telemetry or analytics probes</li>
             </ul>
           </div>
 
           <!-- Android Card -->
           <div class="platform-card">
             <div class="platform-icon-wrap">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5802 8.3585 13.8443 8 12 8s-3.5802.3585-5.1368.9497L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/>
               </svg>
             </div>
             <h3 class="platform-name">Android Companion</h3>
-            <p class="platform-meta">Android 8.0+ · Phone Server & Database</p>
+            <div class="platform-meta-badge">Android 8.0+ &middot; Source Vault &middot; Kotlin</div>
             <p class="platform-details">
-              Hosts the encrypted SQLite database on your device and serves the local companion on port 8080.
+              Hosts your primary encrypted SQLite bookmark collection and serves the authenticated companion server on your local network.
             </p>
 
             <div class="platform-actions">
@@ -190,134 +253,185 @@
               </a>
 
               <a href="https://github.com/Chiranth-Janardhan-moger/webstack" target="_blank" rel="noopener noreferrer" class="link-download-sub">
-                View Android Source Code
+                View Mobile Source Repository
               </a>
             </div>
 
             <ul class="platform-highlights">
-              <li>AES-256 encrypted database</li>
-              <li>Embedded local HTTP server</li>
-              <li>Pure offline, zero internet permissions</li>
+              <li>AES-256 encrypted SQLite database</li>
+              <li>Embedded local HTTP sync engine</li>
+              <li>Pure offline operation, zero cloud sync</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- How It Works Section -->
+    <!-- Principles Bento Section -->
+    <section id="principles" class="features-section">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="editorial-section-kicker">[ SYSTEM ARCHITECTURE ]</div>
+          <h2 class="section-title">Engineered Around Four First Principles</h2>
+          <p class="section-desc">Designed as a durable utility rather than a subscription service. No ads, no tracking, and no external points of failure.</p>
+        </div>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-header">
+              <span class="principle-index">[ 01 ]</span>
+              <span class="principle-category">PRIVACY</span>
+            </div>
+            <h3 class="principle-title">Sovereign Data Custody</h3>
+            <p class="principle-body">
+              Your bookmarks contain your intellectual trace, research interests, and private workflows. WebStack has zero backend servers, zero telemetry SDKs, and zero cloud accounts. Data transfers directly between devices over your home subnet.
+            </p>
+            <div class="principle-meta-mono">DATA_PLANE: P2P_LOCAL_WIFI</div>
+          </div>
+
+          <div class="principle-card">
+            <div class="principle-header">
+              <span class="principle-index">[ 02 ]</span>
+              <span class="principle-category">PERFORMANCE</span>
+            </div>
+            <h3 class="principle-title">Radical Binary Leanness</h3>
+            <p class="principle-body">
+              Standard modern desktop tools bundle a 150 MB Chromium runtime and consume gigabytes of system memory. WebStack is built with Tauri v2 and native OS webview engines. The compiled installer is ~3.6 MB and executes in under 40 MB of RAM.
+            </p>
+            <div class="principle-meta-mono">RUNTIME_MEMORY: &lt; 40MB</div>
+          </div>
+
+          <div class="principle-card">
+            <div class="principle-header">
+              <span class="principle-index">[ 03 ]</span>
+              <span class="principle-category">ERGONOMICS</span>
+            </div>
+            <h3 class="principle-title">Keyboard-First Retrieval</h3>
+            <p class="principle-body">
+              Engineered for power users who refuse to touch the mouse. Strike <kbd class="kbd-key-sm">/</kbd> to open instant fuzzy search across titles, URLs, and domains. Filter collections instantly with numeric keys <kbd class="kbd-key-sm">1</kbd>&ndash;<kbd class="kbd-key-sm">9</kbd>.
+            </p>
+            <div class="principle-meta-mono">QUERY_LATENCY: &lt; 1MS</div>
+          </div>
+
+          <div class="principle-card">
+            <div class="principle-header">
+              <span class="principle-index">[ 04 ]</span>
+              <span class="principle-category">RESILIENCE</span>
+            </div>
+            <h3 class="principle-title">Autonomous Offline Vault</h3>
+            <p class="principle-body">
+              WebStack does not require your phone to remain connected. Synced bookmarks are safely persisted in an offline desktop vault. Whether on an airplane or facing network loss, your entire archive is instantly readable and searchable.
+            </p>
+            <div class="principle-meta-mono">PERSISTENCE: ATOMIC_SQLITE</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works / Protocol Section -->
     <section id="how-it-works" class="how-section">
       <div class="section-container">
         <div class="section-header">
-          <span class="section-tag">Quickstart</span>
-          <h2 class="section-title">How to Sync in 30 Seconds</h2>
-          <p class="section-desc">Zero account setup. No cloud login. Connect in three simple steps.</p>
+          <div class="editorial-section-kicker">[ PROTOCOL LIFECYCLE ]</div>
+          <h2 class="section-title">Replication Protocol</h2>
+          <p class="section-desc">Establishing a peer-to-peer sync session requires neither registration nor credentials.</p>
         </div>
 
-        <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-num">01</div>
-            <h3 class="step-title">Start Phone Companion</h3>
-            <p class="step-desc">
-              Open WebStack on your Android phone. Go to <strong>Settings → PC Companion</strong> and toggle <strong>Local Wi-Fi Sharing</strong> to ON.
-            </p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">02</div>
-            <h3 class="step-title">Open WebStack Desktop</h3>
-            <p class="step-desc">
-              Launch the downloaded <strong>WebStack.exe</strong> on your PC. It will search your local Wi-Fi network for your phone companion.
-            </p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">03</div>
-            <h3 class="step-title">Enter 6-Digit PIN</h3>
-            <p class="step-desc">
-              Enter the 6-digit PIN shown on your phone screen. Your entire bookmark library syncs instantly and remains available offline.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features-section">
-      <div class="section-container">
-        <div class="section-header">
-          <span class="section-tag">Why WebStack</span>
-          <h2 class="section-title">Built for Speed, Privacy, and Control</h2>
-          <p class="section-desc">Everything an offline bookmark manager should be, without the bloated browser extensions or cloud lock-in.</p>
-        </div>
-
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+        <div class="protocol-timeline">
+          <div class="protocol-step">
+            <div class="step-marker">
+              <span class="step-num-mono">01</span>
             </div>
-            <h3 class="feature-title">Ultra-Lightweight (~3.6 MB)</h3>
-            <p class="feature-desc">
-              Unlike typical Electron desktop apps that bundle an entire 150 MB Chromium browser, WebStack uses Tauri v2 and native WebView2. Starts instantly and uses under 40 MB RAM.
-            </p>
+            <div class="step-content">
+              <h3 class="step-heading">Activate Local Companion</h3>
+              <p class="step-text">
+                On your Android device, open WebStack and navigate to <strong>Settings &rarr; PC Companion</strong>. Toggle <strong>Local Wi-Fi Sharing</strong> to start the embedded companion daemon on port 8080.
+              </p>
+              <div class="step-code-snippet">DAEMON: HTTP/1.1 LISTEN 0.0.0.0:8080</div>
+            </div>
           </div>
 
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div class="protocol-step">
+            <div class="step-marker">
+              <span class="step-num-mono">02</span>
             </div>
-            <h3 class="feature-title">100% Private Peer-to-Peer</h3>
-            <p class="feature-desc">
-              Your bookmarks never touch a third-party server. Synchronization occurs directly between your phone and PC over your home Wi-Fi network.
-            </p>
+            <div class="step-content">
+              <h3 class="step-heading">Automatic Subnet Discovery</h3>
+              <p class="step-text">
+                Launch the WebStack desktop client on your PC. It scans your local network subnet to automatically detect your phone's companion endpoint without manual IP configuration.
+              </p>
+              <div class="step-code-snippet">DISCOVERY: LOCAL_SUBNET_PROBE OK</div>
+            </div>
           </div>
 
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <div class="protocol-step">
+            <div class="step-marker">
+              <span class="step-num-mono">03</span>
             </div>
-            <h3 class="feature-title">Instant Keyboard Search</h3>
-            <p class="feature-desc">
-              Press <kbd class="kbd-key-sm">/</kbd> to search hundreds of bookmarks instantly by title, URL, or domain. Filter by custom categories with number keys.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <div class="step-content">
+              <h3 class="step-heading">Authenticate via Ephemeral PIN</h3>
+              <p class="step-text">
+                Enter the 6-digit security PIN presented on your Android screen. WebStack performs an encrypted transfer, instantly replicating your bookmark collection into your local desktop store.
+              </p>
+              <div class="step-code-snippet">AUTH: HANDSHAKE_VERIFIED &middot; REPLICATION_COMPLETE</div>
             </div>
-            <h3 class="feature-title">100% Offline Vault</h3>
-            <p class="feature-desc">
-              Even when your phone is turned off or you are traveling without internet, your synced bookmarks remain permanently cached in your local desktop vault.
-            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Literary Editorial Footer -->
     <footer class="web-footer">
       <div class="web-footer-inner">
         <div class="footer-left">
-          <div class="brand">
-            <div class="brand-icon">
+          <div class="brand-editorial">
+            <div class="brand-symbol">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L3 21L12 14.5L21 21Z" />
               </svg>
             </div>
-            <div class="brand-title">WebStack</div>
+            <span class="brand-wordmark">WebStack</span>
           </div>
-          <p class="footer-sub">Private, offline-first bookmark synchronization across Android and Desktop.</p>
+          <p class="footer-manifesto">
+            A software utility dedicated to local-first computing, sovereign personal data, and high-performance native desktop tools.
+          </p>
+          <div class="footer-meta-line">
+            <span>Distributed under the MIT License</span>
+            <span>&middot;</span>
+            <span>Authored by Chiranth Janardhan Moger</span>
+          </div>
         </div>
 
-        <div class="footer-right">
-          <a href="#download">Download</a>
-          <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop" target="_blank" rel="noopener noreferrer">Desktop GitHub</a>
-          <a href="https://github.com/Chiranth-Janardhan-moger/webstack" target="_blank" rel="noopener noreferrer">Android GitHub</a>
-          <a href="#how-it-works">Setup Guide</a>
+        <div class="footer-col-group">
+          <div class="footer-col">
+            <div class="col-title">SOFTWARE</div>
+            <a href="#download">Windows (.exe / .msi)</a>
+            <a href="#download">Linux (.AppImage / .deb)</a>
+            <a href="#download">Android Companion</a>
+            <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop/releases" target="_blank" rel="noopener noreferrer">Release Changelog</a>
+          </div>
+
+          <div class="footer-col">
+            <div class="col-title">SPECIFICATION</div>
+            <a href="#principles">System Principles</a>
+            <a href="#architecture">Data Plane</a>
+            <a href="#how-it-works">Protocol</a>
+            <a href="https://github.com/Chiranth-Janardhan-moger/webstack-desktop" target="_blank" rel="noopener noreferrer">Desktop Source</a>
+            <a href="https://github.com/Chiranth-Janardhan-moger/webstack" target="_blank" rel="noopener noreferrer">Android Source</a>
+          </div>
         </div>
       </div>
-      <div class="footer-bottom">
-        <span>MIT License · Developed by Chiranth Janardhan Moger</span>
+
+      <div class="footer-bottom-bar">
+        <div class="bottom-left">
+          <span>&copy; 2026 WebStack Systems. All local rights reserved.</span>
+        </div>
+        <div class="bottom-right">
+          <span class="status-indicator">
+            <span class="status-dot-green"></span>
+            <span>v1.0.0 STABLE RELEASE</span>
+          </span>
+        </div>
       </div>
     </footer>
   </div>
