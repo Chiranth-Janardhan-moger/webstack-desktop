@@ -889,11 +889,11 @@ main {
 /* ========================================================== */
 
 .web-landing {
-  --ant-bg: #FAF8F5;
-  --ant-bg-subtle: #F3EFEA;
+  --ant-bg: #FFFFFF;
+  --ant-bg-subtle: #F8F9FA;
   --ant-surface: #FFFFFF;
   --ant-surface-elevated: #FFFFFF;
-  --ant-surface-muted: #F8F6F2;
+  --ant-surface-muted: #F1F3F5;
   --ant-text: #191816;
   --ant-text-secondary: #5A564F;
   --ant-text-muted: #878177;
@@ -912,7 +912,7 @@ main {
 
   width: 100%;
   min-height: 100vh;
-  background: var(--ant-bg);
+  background: #FFFFFF;
   color: var(--ant-text);
   font-family: var(--ant-font-sans);
   line-height: 1.6;
@@ -952,7 +952,7 @@ main {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(250, 248, 245, 0.9);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--ant-border);
@@ -1401,6 +1401,12 @@ main {
   transition: all 0.2s ease;
 }
 
+.preview-badge-live.offline {
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
 .preview-live-dot {
   width: 6px;
   height: 6px;
@@ -1503,6 +1509,116 @@ main {
 
 .preview-circle-btn:active {
   transform: scale(0.92);
+}
+
+/* Tooltip styling for Desktop Preview Controls */
+.preview-circle-btn[data-tooltip],
+.preview-mac-dot[data-tooltip],
+.preview-badge-live[data-tooltip] {
+  position: relative;
+}
+
+.preview-circle-btn[data-tooltip]::after,
+.preview-badge-live[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #18181B;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--ant-font-sans);
+  padding: 4px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.16s ease;
+  z-index: 100;
+}
+
+.preview-circle-btn[data-tooltip]::before,
+.preview-badge-live[data-tooltip]::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border-width: 0 4px 4px 4px;
+  border-style: solid;
+  border-color: transparent transparent #18181B transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.16s ease;
+  z-index: 100;
+}
+
+.preview-circle-btn[data-tooltip]:hover::after,
+.preview-badge-live[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.preview-circle-btn[data-tooltip]:hover::before,
+.preview-badge-live[data-tooltip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Align rightmost button tooltip to prevent edge cutoff */
+.preview-circle-btn:last-child[data-tooltip]::after {
+  left: auto;
+  right: -4px;
+  transform: translateX(0) translateY(4px);
+}
+
+.preview-circle-btn:last-child[data-tooltip]:hover::after {
+  transform: translateX(0) translateY(0);
+}
+
+.preview-circle-btn:last-child[data-tooltip]::before {
+  left: auto;
+  right: 11px;
+  transform: translateX(0) translateY(4px);
+}
+
+.preview-circle-btn:last-child[data-tooltip]:hover::before {
+  transform: translateX(0) translateY(0);
+}
+
+.preview-mac-dot[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #18181B;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: var(--ant-font-sans);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.14s ease, transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.14s ease;
+  z-index: 100;
+}
+
+.preview-mac-dot[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Controls Category Pills Bar */

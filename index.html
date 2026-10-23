@@ -91,9 +91,9 @@
           <div class="preview-app-header">
             <div class="preview-header-left">
               <div class="preview-window-controls" aria-label="macOS Window Controls">
-                <span class="preview-mac-dot dot-close" title="Close"></span>
-                <span class="preview-mac-dot dot-minimize" title="Minimize"></span>
-                <span class="preview-mac-dot dot-maximize" title="Maximize"></span>
+                <span class="preview-mac-dot dot-close" data-tooltip="Close" title="Close"></span>
+                <span class="preview-mac-dot dot-minimize" data-tooltip="Minimize" title="Minimize"></span>
+                <span class="preview-mac-dot dot-maximize" data-tooltip="Maximize" title="Maximize"></span>
               </div>
 
               <div class="preview-controls-divider"></div>
@@ -105,7 +105,7 @@
                   </svg>
                 </div>
                 <span class="preview-brand-title">WebStack</span>
-                <span class="preview-badge-live" title="Direct Wi-Fi Sync Active">
+                <span class="preview-badge-live" data-tooltip="Direct Wi-Fi Sync Active">
                   <span class="preview-live-dot"></span>
                   <span>Live Sync</span>
                 </span>
@@ -122,28 +122,28 @@
                 <kbd class="preview-kbd-hint">/</kbd>
               </div>
 
-              <button type="button" class="preview-circle-btn btn-add" title="Add Bookmark (+)">
+              <button type="button" class="preview-circle-btn btn-add" data-tooltip="Add Bookmark (N)" aria-label="Add Bookmark">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19"></line>
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
               </button>
 
-              <button type="button" class="preview-circle-btn" title="Keyboard Shortcuts (?)">
+              <button type="button" class="preview-circle-btn btn-shortcuts" data-tooltip="Shortcuts (?)" aria-label="Keyboard Shortcuts">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
                   <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M6 12h.001M10 12h.001M14 12h.001M18 12h.001M7 16h10"></path>
                 </svg>
               </button>
 
-              <button type="button" class="preview-circle-btn" title="Server Connection Settings">
+              <button type="button" class="preview-circle-btn btn-settings" data-tooltip="Connection Settings" aria-label="Connection Settings">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="3"></circle>
                   <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
               </button>
 
-              <button type="button" class="preview-circle-btn" title="Disconnect Session">
+              <button type="button" class="preview-circle-btn btn-disconnect" data-tooltip="Disconnect Session" aria-label="Disconnect Session">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                   <polyline points="16 17 21 12 16 7"></polyline>

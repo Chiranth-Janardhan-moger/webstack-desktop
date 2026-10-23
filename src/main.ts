@@ -932,6 +932,50 @@ function initWebLandingMode() {
     });
   });
 
+  // Top Action Buttons Interactive Feedback
+  const previewBtnAdd = document.querySelector<HTMLButtonElement>('.preview-circle-btn.btn-add');
+  const previewBtnShortcuts = document.querySelector<HTMLButtonElement>('.preview-circle-btn.btn-shortcuts');
+  const previewBtnSettings = document.querySelector<HTMLButtonElement>('.preview-circle-btn.btn-settings');
+  const previewBtnDisconnect = document.querySelector<HTMLButtonElement>('.preview-circle-btn.btn-disconnect');
+  const previewLiveBadge = document.querySelector<HTMLElement>('.preview-badge-live');
+
+  if (previewBtnAdd) {
+    previewBtnAdd.addEventListener('click', () => {
+      showToast('Add Bookmark · Press N in the native desktop app');
+      previewSearchInput?.focus();
+    });
+  }
+
+  if (previewBtnShortcuts) {
+    previewBtnShortcuts.addEventListener('click', () => {
+      showToast('Shortcuts: / to search · N to add · Esc to close');
+    });
+  }
+
+  if (previewBtnSettings) {
+    previewBtnSettings.addEventListener('click', () => {
+      showToast('Connection Settings · Syncs with Android on local port 8765');
+    });
+  }
+
+  if (previewBtnDisconnect && previewLiveBadge) {
+    let isDisconnected = false;
+    previewBtnDisconnect.addEventListener('click', () => {
+      isDisconnected = !isDisconnected;
+      if (isDisconnected) {
+        previewLiveBadge.classList.add('offline');
+        previewLiveBadge.innerHTML = `<span class="preview-live-dot" style="background: #F59E0B; box-shadow: none;"></span><span>Disconnected</span>`;
+        previewLiveBadge.setAttribute('data-tooltip', 'Session paused · Click to reconnect');
+        showToast('Disconnected from phone session');
+      } else {
+        previewLiveBadge.classList.remove('offline');
+        previewLiveBadge.innerHTML = `<span class="preview-live-dot"></span><span>Live Sync</span>`;
+        previewLiveBadge.setAttribute('data-tooltip', 'Direct Wi-Fi Sync Active');
+        showToast('Reconnected · Live Sync active');
+      }
+    });
+  }
+
   // Global Keyboard Shortcut: Pressing '/' focuses search
   window.addEventListener('keydown', (e) => {
     if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
