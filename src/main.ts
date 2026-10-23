@@ -958,8 +958,8 @@ function initWebLandingMode() {
       clearTimeout(autoTypingTimer);
     });
 
-    // Auto-Typing Simulation Loop (Chiranth Moger, Anthropic, WebStack)
-    const demoPhrases = ['chiranth', 'anthropic', 'webstack'];
+    // Auto-Typing Simulation Loop (Chiranth Moger, GitHub, WebStack)
+    const demoPhrases = ['chiranth', 'github', 'webstack'];
     let phraseIdx = 0;
     let charIdx = 0;
     let isDeleting = false;

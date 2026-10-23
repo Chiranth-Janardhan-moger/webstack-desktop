@@ -1670,10 +1670,10 @@ main {
   transform: scale(1.05);
 }
 
-.preview-favicon.favicon-anthropic {
-  background: #D96B43;
+.preview-favicon.favicon-github {
+  background: #24292F;
   color: #FFFFFF;
-  border-color: #C05830;
+  border-color: #1F2328;
 }
 
 .preview-favicon.favicon-webstack {
