@@ -833,6 +833,106 @@ function initWebLandingMode() {
       }
     });
   });
+
+  // Scroll Reveal Animations
+  const revealElements = document.querySelectorAll('.reveal, .reveal-stagger');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach((el) => observer.observe(el));
+  } else {
+    revealElements.forEach((el) => el.classList.add('in-view'));
+  }
+
+  // Interactive Desktop Preview Mockup Search & Auto-Demo
+  const mockupInput = document.getElementById('mockupSearchInput') as HTMLInputElement | null;
+  const mockupCards = document.querySelectorAll<HTMLElement>('.mockup-card');
+  let userInteracted = false;
+  let autoTypingTimer: any = null;
+
+  function filterMockupCards(query: string) {
+    const clean = query.trim().toLowerCase();
+    mockupCards.forEach((card) => {
+      if (!clean) {
+        card.classList.remove('dimmed', 'active-match');
+        return;
+      }
+      const keywords = (card.getAttribute('data-keywords') || '') + ' ' + (card.innerText || '');
+      const matches = keywords.toLowerCase().includes(clean);
+      if (matches) {
+        card.classList.add('active-match');
+        card.classList.remove('dimmed');
+      } else {
+        card.classList.remove('active-match');
+        card.classList.add('dimmed');
+      }
+    });
+  }
+
+  if (mockupInput && mockupCards.length > 0) {
+    // User live input handler
+    mockupInput.addEventListener('input', () => {
+      userInteracted = true;
+      clearTimeout(autoTypingTimer);
+      filterMockupCards(mockupInput.value);
+    });
+
+    mockupInput.addEventListener('focus', () => {
+      userInteracted = true;
+      clearTimeout(autoTypingTimer);
+    });
+
+    // Auto-Typing Simulation Loop
+    const demoPhrases = ['local-first', 'anthropic', 'tauri'];
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+
+    function runAutoTyping() {
+      if (userInteracted) return;
+
+      const currentPhrase = demoPhrases[phraseIdx];
+
+      if (!isDeleting) {
+        mockupInput!.value = currentPhrase.substring(0, charIdx + 1);
+        charIdx++;
+        filterMockupCards(mockupInput!.value);
+
+        if (charIdx === currentPhrase.length) {
+          // Pause when word is fully typed
+          isDeleting = true;
+          autoTypingTimer = setTimeout(runAutoTyping, 2400);
+          return;
+        }
+        autoTypingTimer = setTimeout(runAutoTyping, 75 + Math.random() * 40);
+      } else {
+        mockupInput!.value = currentPhrase.substring(0, charIdx - 1);
+        charIdx--;
+        filterMockupCards(mockupInput!.value);
+
+        if (charIdx === 0) {
+          isDeleting = false;
+          phraseIdx = (phraseIdx + 1) % demoPhrases.length;
+          autoTypingTimer = setTimeout(runAutoTyping, 700);
+          return;
+        }
+        autoTypingTimer = setTimeout(runAutoTyping, 35);
+      }
+    }
+
+    // Start auto typing demo after initial page load
+    autoTypingTimer = setTimeout(runAutoTyping, 1200);
+  }
 }
 
 // Main Entrypoint

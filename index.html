@@ -46,23 +46,24 @@
 
     <!-- Hero Section -->
     <header class="hero-section">
+      <div class="hero-ambient-aura" aria-hidden="true"></div>
       <div class="hero-inner">
-        <div class="hero-badge-clean">
+        <div class="hero-badge-clean animate-fade-down">
           <span class="status-pulse-dot"></span>
           <span>v1.0.0 &middot; Windows, Linux &amp; Android</span>
         </div>
 
-        <h1 class="hero-headline">
+        <h1 class="hero-headline animate-fade-up">
           Private bookmark sync.<br>
           <em>Zero cloud. Native speed.</em>
         </h1>
 
-        <p class="hero-subheadline">
+        <p class="hero-subheadline animate-fade-up-delay-1">
           WebStack connects your Android phone directly to your desktop over your home Wi-Fi.
           No accounts, no remote databases, and no tracking.
         </p>
 
-        <div class="hero-cta-group">
+        <div class="hero-cta-group animate-fade-up-delay-2">
           <a href="#download" class="btn-primary hero-btn-main">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -76,7 +77,7 @@
           </a>
         </div>
 
-        <div class="hero-guarantees">
+        <div class="hero-guarantees animate-fade-up-delay-3">
           <span>&sim;3.6 MB native binary</span>
           <span class="guarantee-dot">&middot;</span>
           <span>Under 40 MB RAM</span>
@@ -85,16 +86,17 @@
         </div>
 
         <!-- Clean Interactive Desktop App Preview Frame -->
-        <div class="hero-preview-frame">
+        <div class="hero-preview-frame" id="heroPreviewFrame">
           <div class="mockup-header">
             <div class="mockup-dots">
               <span class="mockup-dot red"></span>
               <span class="mockup-dot yellow"></span>
               <span class="mockup-dot green"></span>
             </div>
-            <div class="mockup-search-bar">
+            <div class="mockup-search-bar" id="mockupSearchBar">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <span>Search bookmarks...</span>
+              <input type="text" id="mockupSearchInput" class="mockup-search-input" placeholder="Search bookmarks..." autocomplete="off" spellcheck="false" />
+              <span class="mockup-cursor" id="mockupCursor"></span>
               <kbd class="mockup-kbd">/</kbd>
             </div>
             <div class="mockup-status">
@@ -102,8 +104,8 @@
               <span>Wi-Fi Synced</span>
             </div>
           </div>
-          <div class="mockup-body">
-            <div class="mockup-card">
+          <div class="mockup-body" id="mockupBody">
+            <div class="mockup-card" data-keywords="github local first software architecture dev code">
               <div class="card-icon-squircle">GH</div>
               <div class="card-info">
                 <div class="card-title">Local-First Software: You Own Your Data</div>
@@ -111,7 +113,7 @@
               </div>
               <span class="card-chip">Reading</span>
             </div>
-            <div class="mockup-card">
+            <div class="mockup-card" data-keywords="anthropic research ai papers interpretability steering model">
               <div class="card-icon-squircle anthropic-squircle">A</div>
               <div class="card-info">
                 <div class="card-title">Anthropic Research: Interpretability and Steering</div>
@@ -119,7 +121,7 @@
               </div>
               <span class="card-chip">Pinned</span>
             </div>
-            <div class="mockup-card">
+            <div class="mockup-card" data-keywords="tauri rust native webviews desktop docs documentation app">
               <div class="card-icon-squircle rust-squircle">RS</div>
               <div class="card-info">
                 <div class="card-title">Tauri v2 Documentation &amp; Native WebViews</div>
@@ -135,12 +137,12 @@
     <!-- Why WebStack (3 Clean Pillars) -->
     <section id="features" class="features-section">
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <h2 class="section-title">Built for Speed, Privacy, and Control</h2>
           <p class="section-desc">Everything a bookmark manager should be. Simple, fast, and completely under your control.</p>
         </div>
 
-        <div class="pillars-grid">
+        <div class="pillars-grid reveal-stagger">
           <div class="pillar-card">
             <div class="pillar-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -185,12 +187,12 @@
     <!-- How It Works (Simple 3 Steps) -->
     <section id="how-it-works" class="how-section">
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <h2 class="section-title">How to Sync in 30 Seconds</h2>
           <p class="section-desc">Zero accounts. No sign-in. Connect in three simple steps.</p>
         </div>
 
-        <div class="steps-row">
+        <div class="steps-row reveal-stagger">
           <div class="step-card-clean">
             <div class="step-badge">01</div>
             <h3 class="step-heading">Turn on Sharing</h3>
@@ -221,12 +223,12 @@
     <!-- Download Section -->
     <section id="download" class="download-section">
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <h2 class="section-title">Download WebStack</h2>
           <p class="section-desc">Free, open-source, and ready to install on your computer and phone.</p>
         </div>
 
-        <div class="platforms-grid">
+        <div class="platforms-grid reveal-stagger">
           <!-- Windows Card -->
           <div class="platform-card platform-card-featured">
             <div class="card-featured-badge">RECOMMENDED</div>
@@ -338,7 +340,7 @@
 
     <!-- Literary Editorial Footer -->
     <footer class="web-footer">
-      <div class="web-footer-inner">
+      <div class="web-footer-inner reveal">
         <div class="footer-left">
           <div class="brand-editorial">
             <div class="brand-symbol">
