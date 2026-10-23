@@ -85,49 +85,212 @@
           <span>100% offline access</span>
         </div>
 
-        <!-- Clean Interactive Desktop App Preview Frame -->
+        <!-- Clean Elevated Interactive WebStack Desktop UI Preview -->
         <div class="hero-preview-frame" id="heroPreviewFrame">
-          <div class="mockup-header">
-            <div class="mockup-dots">
-              <span class="mockup-dot red"></span>
-              <span class="mockup-dot yellow"></span>
-              <span class="mockup-dot green"></span>
+          <!-- Top Desktop App Window Header -->
+          <div class="preview-app-header">
+            <div class="preview-header-left">
+              <div class="preview-window-controls" aria-label="macOS Window Controls">
+                <span class="preview-mac-dot dot-close" title="Close"></span>
+                <span class="preview-mac-dot dot-minimize" title="Minimize"></span>
+                <span class="preview-mac-dot dot-maximize" title="Maximize"></span>
+              </div>
+
+              <div class="preview-controls-divider"></div>
+
+              <div class="preview-brand">
+                <div class="preview-brand-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L3 21L12 14.5L21 21Z" />
+                  </svg>
+                </div>
+                <span class="preview-brand-title">WebStack</span>
+                <span class="preview-badge-live" title="Direct Wi-Fi Sync Active">
+                  <span class="preview-live-dot"></span>
+                  <span>Live Sync</span>
+                </span>
+              </div>
             </div>
-            <div class="mockup-search-bar" id="mockupSearchBar">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input type="text" id="mockupSearchInput" class="mockup-search-input" placeholder="Search bookmarks..." autocomplete="off" spellcheck="false" />
-              <span class="mockup-cursor" id="mockupCursor"></span>
-              <kbd class="mockup-kbd">/</kbd>
-            </div>
-            <div class="mockup-status">
-              <span class="status-pulse-dot"></span>
-              <span>Wi-Fi Synced</span>
+
+            <div class="preview-header-actions">
+              <div class="preview-search-nav" id="previewSearchBar">
+                <svg class="preview-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="previewSearchInput" class="preview-search-input" placeholder="Search stack..." autocomplete="off" spellcheck="false" />
+                <kbd class="preview-kbd-hint">/</kbd>
+              </div>
+
+              <button type="button" class="preview-circle-btn btn-add" title="Add Bookmark (+)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+
+              <button type="button" class="preview-circle-btn" title="Keyboard Shortcuts (?)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                  <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M6 12h.001M10 12h.001M14 12h.001M18 12h.001M7 16h10"></path>
+                </svg>
+              </button>
+
+              <button type="button" class="preview-circle-btn" title="Server Connection Settings">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+              </button>
+
+              <button type="button" class="preview-circle-btn" title="Disconnect Session">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+              </button>
             </div>
           </div>
-          <div class="mockup-body" id="mockupBody">
-            <div class="mockup-card" data-keywords="github local first software architecture dev code">
-              <div class="card-icon-squircle">GH</div>
-              <div class="card-info">
-                <div class="card-title">Local-First Software: You Own Your Data</div>
-                <div class="card-meta">github.com &middot; Architecture</div>
-              </div>
-              <span class="card-chip">Reading</span>
+
+          <!-- Controls Category Pills Bar -->
+          <div class="preview-controls-bar">
+            <div class="preview-category-pills" id="previewCategoryPills">
+              <button type="button" class="preview-chip active" data-cat="ALL">All <span class="chip-count">3</span></button>
+              <button type="button" class="preview-chip" data-cat="Personal">Personal <span class="chip-count">1</span></button>
+              <button type="button" class="preview-chip" data-cat="AI & Security">AI &amp; Security <span class="chip-count">1</span></button>
+              <button type="button" class="preview-chip" data-cat="Engineering">Engineering <span class="chip-count">1</span></button>
+              <button type="button" class="preview-chip" data-cat="Design">Design <span class="chip-count">0</span></button>
+              <button type="button" class="preview-chip" data-cat="Tools">Tools <span class="chip-count">0</span></button>
             </div>
-            <div class="mockup-card" data-keywords="anthropic research ai papers interpretability steering model">
-              <div class="card-icon-squircle anthropic-squircle">A</div>
-              <div class="card-info">
-                <div class="card-title">Anthropic Research: Interpretability and Steering</div>
-                <div class="card-meta">anthropic.com &middot; AI Research</div>
+          </div>
+
+          <!-- Bookmarks Grid -->
+          <div class="preview-grid" id="previewGrid">
+            <!-- Card 1: Exact Card from Actual Desktop App Screenshot -->
+            <div class="preview-bookmark-card" data-cat="Personal" data-keywords="chiranth moger agentic ai systems security applied ml engineer portfolio personal chiranth.vercel.app">
+              <div class="preview-card-top">
+                <div class="preview-favicon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                </div>
+                <div class="preview-card-info">
+                  <div class="preview-card-title" title="Chiranth Moger | Agentic AI, Systems Security &amp; Applied ML Engineer">Chiranth Moger | Agentic AI, Systems Security &amp; Applied ML Engineer</div>
+                  <div class="preview-card-domain">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>chiranth.vercel.app</span>
+                  </div>
+                </div>
               </div>
-              <span class="card-chip">Pinned</span>
+              <div class="preview-card-bottom">
+                <div class="preview-card-tag">Personal</div>
+                <div class="preview-card-actions">
+                  <button type="button" class="preview-action-btn btn-copy" data-url="https://chiranth.vercel.app" title="Copy Link">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                  <a href="https://chiranth.vercel.app" target="_blank" rel="noopener noreferrer" class="preview-action-btn btn-open" title="Open in Browser">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span>Open</span>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="mockup-card" data-keywords="tauri rust native webviews desktop docs documentation app">
-              <div class="card-icon-squircle rust-squircle">RS</div>
-              <div class="card-info">
-                <div class="card-title">Tauri v2 Documentation &amp; Native WebViews</div>
-                <div class="card-meta">tauri.app &middot; Documentation</div>
+
+            <!-- Card 2: AI & Security -->
+            <div class="preview-bookmark-card" data-cat="AI & Security" data-keywords="anthropic research constitutional ai interpretability frontier model security anthropic.com">
+              <div class="preview-card-top">
+                <div class="preview-favicon favicon-anthropic">
+                  <span>A</span>
+                </div>
+                <div class="preview-card-info">
+                  <div class="preview-card-title" title="Anthropic Research | Interpretability and Frontier Alignment">Anthropic Research | Interpretability and Frontier Alignment</div>
+                  <div class="preview-card-domain">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>anthropic.com</span>
+                  </div>
+                </div>
               </div>
-              <span class="card-chip">Docs</span>
+              <div class="preview-card-bottom">
+                <div class="preview-card-tag">AI &amp; Security</div>
+                <div class="preview-card-actions">
+                  <button type="button" class="preview-action-btn btn-copy" data-url="https://anthropic.com/research" title="Copy Link">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                  <a href="https://anthropic.com/research" target="_blank" rel="noopener noreferrer" class="preview-action-btn btn-open" title="Open in Browser">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span>Open</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Engineering -->
+            <div class="preview-bookmark-card" data-cat="Engineering" data-keywords="webstack desktop local-first rust tauri cross-platform sync engineering github.com">
+              <div class="preview-card-top">
+                <div class="preview-favicon favicon-webstack">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L3 21L12 14.5L21 21Z" />
+                  </svg>
+                </div>
+                <div class="preview-card-info">
+                  <div class="preview-card-title" title="WebStack Desktop | Local-First Cross-Platform Bookmark Vault">WebStack Desktop | Local-First Cross-Platform Bookmark Vault</div>
+                  <div class="preview-card-domain">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>github.com/webstack</span>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-card-bottom">
+                <div class="preview-card-tag">Engineering</div>
+                <div class="preview-card-actions">
+                  <button type="button" class="preview-action-btn btn-copy" data-url="https://github.com/Chiranth-Janardhan-moger/webstack" title="Copy Link">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                  <a href="https://github.com/Chiranth-Janardhan-moger/webstack" target="_blank" rel="noopener noreferrer" class="preview-action-btn btn-open" title="Open in Browser">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span>Open</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

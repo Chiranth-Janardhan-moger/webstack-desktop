@@ -854,22 +854,38 @@ function initWebLandingMode() {
     revealElements.forEach((el) => el.classList.add('in-view'));
   }
 
-  // Interactive Desktop Preview Mockup Search & Auto-Demo
-  const mockupInput = document.getElementById('mockupSearchInput') as HTMLInputElement | null;
-  const mockupCards = document.querySelectorAll<HTMLElement>('.mockup-card');
+  // Interactive Elevated Desktop Preview System
+  const previewSearchInput = document.getElementById('previewSearchInput') as HTMLInputElement | null;
+  const previewCards = document.querySelectorAll<HTMLElement>('.preview-bookmark-card');
+  const previewChips = document.querySelectorAll<HTMLButtonElement>('.preview-chip');
   let userInteracted = false;
   let autoTypingTimer: any = null;
+  let activeCategory = 'ALL';
 
-  function filterMockupCards(query: string) {
-    const clean = query.trim().toLowerCase();
-    mockupCards.forEach((card) => {
-      if (!clean) {
+  function applyPreviewFilters() {
+    const query = (previewSearchInput?.value || '').trim().toLowerCase();
+
+    previewCards.forEach((card) => {
+      const cardCat = card.getAttribute('data-cat') || '';
+      const matchesCategory = activeCategory === 'ALL' || cardCat.toLowerCase() === activeCategory.toLowerCase();
+
+      if (!matchesCategory) {
+        card.classList.add('hidden-by-filter');
+        card.classList.remove('active-match', 'dimmed');
+        return;
+      }
+
+      card.classList.remove('hidden-by-filter');
+
+      if (!query) {
         card.classList.remove('dimmed', 'active-match');
         return;
       }
+
       const keywords = (card.getAttribute('data-keywords') || '') + ' ' + (card.innerText || '');
-      const matches = keywords.toLowerCase().includes(clean);
-      if (matches) {
+      const matchesQuery = keywords.toLowerCase().includes(query);
+
+      if (matchesQuery) {
         card.classList.add('active-match');
         card.classList.remove('dimmed');
       } else {
@@ -879,21 +895,71 @@ function initWebLandingMode() {
     });
   }
 
-  if (mockupInput && mockupCards.length > 0) {
+  // Category Filtering
+  previewChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      previewChips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeCategory = chip.getAttribute('data-cat') || 'ALL';
+      applyPreviewFilters();
+    });
+  });
+
+  // Copy Buttons with Micro-Feedback
+  document.querySelectorAll<HTMLButtonElement>('.preview-action-btn.btn-copy').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const url = btn.getAttribute('data-url') || '';
+      if (url) {
+        navigator.clipboard.writeText(url).then(() => {
+          const originalHTML = btn.innerHTML;
+          btn.classList.add('copied');
+          btn.innerHTML = `
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Copied!</span>
+          `;
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = originalHTML;
+          }, 1500);
+        }).catch(() => {
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1000);
+        });
+      }
+    });
+  });
+
+  // Global Keyboard Shortcut: Pressing '/' focuses search
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+      if (previewSearchInput) {
+        e.preventDefault();
+        previewSearchInput.focus();
+        previewSearchInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        userInteracted = true;
+        clearTimeout(autoTypingTimer);
+      }
+    }
+  });
+
+  if (previewSearchInput && previewCards.length > 0) {
     // User live input handler
-    mockupInput.addEventListener('input', () => {
+    previewSearchInput.addEventListener('input', () => {
       userInteracted = true;
       clearTimeout(autoTypingTimer);
-      filterMockupCards(mockupInput.value);
+      applyPreviewFilters();
     });
 
-    mockupInput.addEventListener('focus', () => {
+    previewSearchInput.addEventListener('focus', () => {
       userInteracted = true;
       clearTimeout(autoTypingTimer);
     });
 
-    // Auto-Typing Simulation Loop
-    const demoPhrases = ['local-first', 'anthropic', 'tauri'];
+    // Auto-Typing Simulation Loop (Chiranth Moger, Anthropic, WebStack)
+    const demoPhrases = ['chiranth', 'anthropic', 'webstack'];
     let phraseIdx = 0;
     let charIdx = 0;
     let isDeleting = false;
@@ -904,26 +970,25 @@ function initWebLandingMode() {
       const currentPhrase = demoPhrases[phraseIdx];
 
       if (!isDeleting) {
-        mockupInput!.value = currentPhrase.substring(0, charIdx + 1);
+        previewSearchInput!.value = currentPhrase.substring(0, charIdx + 1);
         charIdx++;
-        filterMockupCards(mockupInput!.value);
+        applyPreviewFilters();
 
         if (charIdx === currentPhrase.length) {
-          // Pause when word is fully typed
           isDeleting = true;
           autoTypingTimer = setTimeout(runAutoTyping, 2400);
           return;
         }
-        autoTypingTimer = setTimeout(runAutoTyping, 75 + Math.random() * 40);
+        autoTypingTimer = setTimeout(runAutoTyping, 80 + Math.random() * 35);
       } else {
-        mockupInput!.value = currentPhrase.substring(0, charIdx - 1);
+        previewSearchInput!.value = currentPhrase.substring(0, charIdx - 1);
         charIdx--;
-        filterMockupCards(mockupInput!.value);
+        applyPreviewFilters();
 
         if (charIdx === 0) {
           isDeleting = false;
           phraseIdx = (phraseIdx + 1) % demoPhrases.length;
-          autoTypingTimer = setTimeout(runAutoTyping, 700);
+          autoTypingTimer = setTimeout(runAutoTyping, 800);
           return;
         }
         autoTypingTimer = setTimeout(runAutoTyping, 35);
