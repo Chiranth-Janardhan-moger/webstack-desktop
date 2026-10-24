@@ -18,7 +18,7 @@
   <!-- ========================================== -->
   <div id="webLanding" class="web-landing">
     <!-- Navbar -->
-    <nav class="web-nav">
+    <nav class="web-nav" id="webNav">
       <div class="web-nav-inner">
         <a href="/" class="brand-editorial" style="text-decoration: none; color: inherit;">
           <div class="brand-symbol">
@@ -29,7 +29,23 @@
           <span class="brand-wordmark">WebStack</span>
         </a>
 
-        <div class="web-nav-links">
+        <!-- Mobile Header Actions (CTA + Hamburger Toggle) -->
+        <div class="web-nav-mobile-group">
+          <a href="#download" class="btn-primary btn-nav-cta btn-nav-cta-mobile">Get WebStack</a>
+          <button type="button" class="web-nav-toggle" id="webNavToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
+            <svg class="nav-toggle-icon icon-hamburger" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+            <svg class="nav-toggle-icon icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="web-nav-links" id="webNavLinks">
           <a href="#features" class="nav-link">Why WebStack</a>
           <a href="#how-it-works" class="nav-link">How it Works</a>
           <a href="#download" class="nav-link active">Downloads</a>
@@ -39,7 +55,7 @@
             </svg>
             <span>GitHub</span>
           </a>
-          <a href="#download" class="btn-primary btn-nav-cta">Get WebStack</a>
+          <a href="#download" class="btn-primary btn-nav-cta btn-nav-cta-desktop">Get WebStack</a>
         </div>
       </div>
     </nav>
