@@ -909,10 +909,10 @@ main {
   --ant-text: #191816;
   --ant-text-secondary: #5A564F;
   --ant-text-muted: #878177;
-  --ant-terracotta: #D96B43;
-  --ant-terracotta-hover: #C25B34;
-  --ant-terracotta-bg: rgba(217, 107, 67, 0.08);
-  --ant-terracotta-border: rgba(217, 107, 67, 0.22);
+  --ant-accent: #2563EB;
+  --ant-accent-hover: #1D4ED8;
+  --ant-accent-bg: rgba(37, 99, 235, 0.08);
+  --ant-accent-border: rgba(37, 99, 235, 0.22);
   --ant-border: rgba(25, 24, 22, 0.08);
   --ant-border-strong: rgba(25, 24, 22, 0.14);
   --ant-hairline: rgba(25, 24, 22, 0.05);
@@ -947,10 +947,10 @@ main {
     --ant-text: #F4EFEA;
     --ant-text-secondary: #B5AEA2;
     --ant-text-muted: #7D766C;
-    --ant-terracotta: #E07A55;
-    --ant-terracotta-hover: #E98B67;
-    --ant-terracotta-bg: rgba(224, 122, 85, 0.14);
-    --ant-terracotta-border: rgba(224, 122, 85, 0.28);
+    --ant-accent: #3B82F6;
+    --ant-accent-hover: #60A5FA;
+    --ant-accent-bg: rgba(59, 130, 246, 0.14);
+    --ant-accent-border: rgba(59, 130, 246, 0.28);
     --ant-border: rgba(244, 239, 234, 0.08);
     --ant-border-strong: rgba(244, 239, 234, 0.16);
     --ant-hairline: rgba(244, 239, 234, 0.05);
@@ -1162,7 +1162,7 @@ main {
   transform: translateX(-50%);
   width: 860px;
   height: 600px;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(217, 107, 67, 0.12) 0%, rgba(217, 107, 67, 0.03) 60%, transparent 100%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.03) 60%, transparent 100%);
   pointer-events: none;
   z-index: 0;
   animation: heroAuraPulse 9s ease-in-out infinite alternate;
@@ -1266,7 +1266,7 @@ main {
 .hero-headline em {
   font-style: italic;
   font-family: var(--ant-font-serif);
-  color: var(--ant-terracotta);
+  color: var(--ant-accent);
   font-weight: 400;
 }
 
@@ -1294,7 +1294,7 @@ main {
   font-weight: 500;
   text-decoration: none;
   border-radius: 999px;
-  background: var(--ant-terracotta);
+  background: var(--ant-accent);
   color: #FFFFFF;
   display: inline-flex;
   align-items: center;
@@ -1318,9 +1318,9 @@ main {
 }
 
 .hero-btn-main:hover {
-  background: var(--ant-terracotta-hover);
+  background: var(--ant-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px -2px rgba(217, 107, 67, 0.35);
+  box-shadow: 0 8px 20px -2px rgba(37, 99, 235, 0.35);
 }
 
 .hero-btn-main:hover::after {
@@ -1393,7 +1393,7 @@ main {
 
 .hero-preview-frame:hover {
   transform: translateY(-4px) scale(1.004);
-  box-shadow: 0 26px 70px -15px rgba(217, 107, 67, 0.18), 0 0 0 1px var(--ant-terracotta-border);
+  box-shadow: 0 26px 70px -15px rgba(37, 99, 235, 0.18), 0 0 0 1px var(--ant-accent-border);
 }
 
 /* Desktop App Window Top Bar */
@@ -1544,8 +1544,8 @@ main {
 
 .preview-search-nav:focus-within {
   width: 220px;
-  border-color: var(--ant-terracotta);
-  box-shadow: 0 0 0 2px var(--ant-terracotta-bg);
+  border-color: var(--ant-accent);
+  box-shadow: 0 0 0 2px var(--ant-accent-bg);
 }
 
 .preview-search-icon {
@@ -1846,14 +1846,14 @@ main {
 }
 
 .preview-bookmark-card.active-match {
-  border-color: var(--ant-terracotta);
+  border-color: var(--ant-accent);
   background: var(--ant-surface);
-  box-shadow: 0 0 0 2px var(--ant-terracotta-bg), 0 8px 20px -4px rgba(217, 107, 67, 0.15);
+  box-shadow: 0 0 0 2px var(--ant-accent-bg), 0 8px 20px -4px rgba(37, 99, 235, 0.15);
   transform: translateY(-2px);
 }
 
 .preview-bookmark-card.active-match .preview-card-title {
-  color: var(--ant-terracotta);
+  color: var(--ant-accent);
 }
 
 .preview-bookmark-card.dimmed {
@@ -2110,7 +2110,7 @@ main {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--ant-terracotta), transparent);
+  background: linear-gradient(90deg, transparent, var(--ant-accent), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -2134,16 +2134,16 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ant-terracotta);
+  color: var(--ant-accent);
   margin-bottom: 20px;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pillar-card:hover .pillar-icon {
   transform: scale(1.1) rotate(-3deg);
-  background: var(--ant-terracotta);
+  background: var(--ant-accent);
   color: #FFFFFF;
-  box-shadow: 0 6px 18px var(--ant-terracotta-bg);
+  box-shadow: 0 6px 18px var(--ant-accent-bg);
 }
 
 .pillar-title {
@@ -2201,7 +2201,7 @@ main {
   font-family: var(--ant-font-serif);
   font-size: 32px;
   font-weight: 400;
-  color: var(--ant-terracotta);
+  color: var(--ant-accent);
   line-height: 1;
   margin-bottom: 14px;
   transition: transform 0.3s ease;
@@ -2267,7 +2267,7 @@ main {
 }
 
 .platform-card-featured {
-  border-color: var(--ant-terracotta-border);
+  border-color: var(--ant-accent-border);
 }
 
 .card-featured-badge {
@@ -2278,7 +2278,7 @@ main {
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 1.2px;
-  background: var(--ant-terracotta);
+  background: var(--ant-accent);
   color: #FFFFFF;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2381,13 +2381,13 @@ main {
 }
 
 .platform-card-featured .btn-download-card {
-  background: var(--ant-terracotta);
+  background: var(--ant-accent);
   color: #FFFFFF;
 }
 
 .platform-card-featured .btn-download-card:hover {
-  background: var(--ant-terracotta-hover);
-  box-shadow: 0 8px 20px -2px rgba(217, 107, 67, 0.35);
+  background: var(--ant-accent-hover);
+  box-shadow: 0 8px 20px -2px rgba(37, 99, 235, 0.35);
 }
 
 .link-download-sub {
@@ -2422,7 +2422,7 @@ main {
 
 .platform-highlights li::before {
   content: "✓";
-  color: var(--ant-terracotta);
+  color: var(--ant-accent);
   font-weight: 700;
   font-size: 13px;
 }
